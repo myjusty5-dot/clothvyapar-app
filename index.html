@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClothVyapar - Advanced Cloud POS & Accounting</title>
+    <title>KOHINOOR FANCY AND LADIES STORE - POS & Accounting</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -13,25 +13,26 @@
     <div id="auth-container" class="flex items-center justify-center min-h-screen p-4">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-200">
             <div class="text-center mb-6">
-                <h1 class="text-3xl font-extrabold text-blue-600 tracking-tight">ClothVyapar</h1>
-                <p class="text-xs text-slate-500 mt-1">Smart Cloud POS & Accounting Suite</p>
+                <span class="bg-pink-100 text-pink-700 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full">Retail POS Suite</span>
+                <h1 class="text-2xl font-black text-slate-900 tracking-tight mt-2">KOHINOOR FANCY</h1>
+                <p class="text-xs text-slate-500 font-medium">AND LADIES STORE</p>
             </div>
             
-            <h2 id="form-title" class="text-xl font-bold mb-4 text-slate-800 text-center">Login to your Store</h2>
+            <h2 id="form-title" class="text-lg font-bold mb-4 text-slate-800 text-center">Login to Store Portal</h2>
 
             <!-- Login Form -->
             <div id="login-section">
                 <div class="mb-4">
                     <label class="block text-slate-700 text-xs font-bold uppercase mb-1">Email Address</label>
-                    <input type="email" id="login-email" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="store@example.com" required />
+                    <input type="email" id="login-email" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="store@example.com" required />
                 </div>
                 <div class="mb-5">
                     <label class="block text-slate-700 text-xs font-bold uppercase mb-1">Password</label>
-                    <input type="password" id="login-password" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="••••••••" required />
+                    <input type="password" id="login-password" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="••••••••" required />
                 </div>
-                <button type="button" id="btn-login" class="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition font-bold shadow-lg shadow-blue-500/20 text-sm mb-4">Secure Login</button>
+                <button type="button" id="btn-login" class="w-full bg-pink-600 text-white py-3 rounded-xl hover:bg-pink-700 transition font-bold shadow-lg shadow-pink-500/20 text-sm mb-4">Secure Login</button>
                 <div class="flex justify-between text-xs font-medium">
-                    <a href="#" id="link-goto-signup" class="text-blue-600 hover:underline">Create Store Account</a>
+                    <a href="#" id="link-goto-signup" class="text-pink-600 hover:underline">Create Store Account</a>
                     <a href="#" id="link-goto-forgot" class="text-slate-500 hover:underline">Forgot Password?</a>
                 </div>
             </div>
@@ -40,25 +41,25 @@
             <div id="signup-section" style="display: none;" class="mt-2">
                 <div class="mb-4">
                     <label class="block text-slate-700 text-xs font-bold uppercase mb-1">Email Address</label>
-                    <input type="email" id="signup-email" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="store@example.com" required />
+                    <input type="email" id="signup-email" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="store@example.com" required />
                 </div>
                 <div class="mb-5">
                     <label class="block text-slate-700 text-xs font-bold uppercase mb-1">Password (Min 6 Chars)</label>
-                    <input type="password" id="signup-password" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="••••••••" required />
+                    <input type="password" id="signup-password" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="••••••••" required />
                 </div>
-                <button type="button" id="btn-signup" class="w-full bg-emerald-600 text-white py-3 rounded-xl hover:bg-emerald-700 transition font-bold shadow-lg shadow-emerald-500/20 text-sm mb-4">Register Store</button>
+                <button type="button" id="btn-signup" class="w-full bg-slate-900 text-white py-3 rounded-xl hover:bg-slate-800 transition font-bold shadow-lg text-sm mb-4">Register Account</button>
                 <div class="text-center">
-                    <a href="#" id="link-goto-login1" class="text-xs text-blue-600 font-medium hover:underline">← Back to Login</a>
+                    <a href="#" id="link-goto-login1" class="text-xs text-pink-600 font-medium hover:underline">← Back to Login</a>
                 </div>
             </div>
 
             <!-- Forgot Password Modal -->
             <div id="forgot-password-modal" style="display: none;" class="mt-2">
-                <p class="text-xs text-slate-500 mb-4">Enter your registered email to receive a recovery link.</p>
-                <input type="email" id="reset-email" class="w-full px-3.5 py-2.5 border rounded-xl text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="store@example.com" />
-                <button type="button" id="btn-reset" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-blue-700 mb-4 shadow-md">Send Recovery Link</button>
+                <p class="text-xs text-slate-500 mb-4">Enter your registered email to receive a password recovery link.</p>
+                <input type="email" id="reset-email" class="w-full px-3.5 py-2.5 border rounded-xl text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="store@example.com" />
+                <button type="button" id="btn-reset" class="w-full bg-pink-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-pink-700 mb-4 shadow-md">Send Recovery Link</button>
                 <div class="text-center">
-                    <a href="#" id="link-goto-login2" class="text-xs text-blue-600 font-medium hover:underline">← Back to Login</a>
+                    <a href="#" id="link-goto-login2" class="text-xs text-pink-600 font-medium hover:underline">← Back to Login</a>
                 </div>
             </div>
         </div>
@@ -69,8 +70,8 @@
         <!-- Top Navigation Bar -->
         <header class="bg-slate-900 text-white shadow-md px-4 py-3 flex justify-between items-center sticky top-0 z-50">
             <div class="flex items-center space-x-2">
-                <span class="bg-blue-600 font-black text-xs px-2.5 py-1 rounded-lg">POS</span>
-                <h1 class="font-bold text-sm tracking-wide">ClothVyapar</h1>
+                <span class="bg-pink-600 font-black text-xs px-2.5 py-1 rounded-lg">KOHINOOR</span>
+                <h1 class="font-bold text-xs tracking-wide truncate max-w-[200px] sm:max-w-none">Fancy & Ladies Store</h1>
             </div>
             <div class="flex items-center space-x-2">
                 <span id="user-email-display" class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg hidden sm:inline-block truncate max-w-[150px]"></span>
@@ -82,9 +83,9 @@
         <main class="p-4 max-w-5xl mx-auto w-full flex-grow">
             <!-- Navigation Tabs -->
             <div class="flex bg-white rounded-2xl p-1.5 shadow-sm border border-slate-200 mb-4 text-xs font-semibold">
-                <button type="button" id="tab-pos" class="flex-1 py-2.5 text-center rounded-xl transition bg-blue-600 text-white shadow-sm">⚡ POS Billing</button>
-                <button type="button" id="tab-ledger" class="flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-blue-600">📖 Sales Ledger</button>
-                <button type="button" id="tab-balance" class="flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-blue-600">📊 Balance Sheet</button>
+                <button type="button" id="tab-pos" class="flex-1 py-2.5 text-center rounded-xl transition bg-pink-600 text-white shadow-sm">⚡ POS Billing</button>
+                <button type="button" id="tab-ledger" class="flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-pink-600">📖 Sales Ledger</button>
+                <button type="button" id="tab-balance" class="flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-pink-600">📊 Balance Sheet</button>
             </div>
 
             <!-- 1. POS TAB PANEL -->
@@ -93,20 +94,33 @@
                 <div class="md:col-span-1 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 h-fit space-y-3">
                     <h3 class="font-bold text-slate-800 text-sm flex items-center justify-between">
                         <span>Add Item</span>
-                        <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-semibold">Quick Entry</span>
+                        <span class="text-[10px] bg-pink-50 text-pink-600 px-2 py-0.5 rounded-full font-semibold">Billing Desk</span>
                     </h3>
+
+                    <!-- Quick Preset Buttons for Ladies Items -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Quick Select Category</label>
+                        <div class="flex flex-wrap gap-1">
+                            <button type="button" onclick="quickSelect('Saree', 1200)" class="text-[10px] bg-slate-100 hover:bg-pink-50 hover:text-pink-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Saree</button>
+                            <button type="button" onclick="quickSelect('Kurti', 650)" class="text-[10px] bg-slate-100 hover:bg-pink-50 hover:text-pink-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Kurti</button>
+                            <button type="button" onclick="quickSelect('Suit Set', 1800)" class="text-[10px] bg-slate-100 hover:bg-pink-50 hover:text-pink-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Suit Set</button>
+                            <button type="button" onclick="quickSelect('Lehenga', 3500)" class="text-[10px] bg-slate-100 hover:bg-pink-50 hover:text-pink-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Lehenga</button>
+                            <button type="button" onclick="quickSelect('Cosmetics', 300)" class="text-[10px] bg-slate-100 hover:bg-pink-50 hover:text-pink-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Cosmetics</button>
+                        </div>
+                    </div>
+
                     <div>
                         <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Item Description</label>
-                        <input type="text" id="item-name" placeholder="e.g. Designer Kurti / Silk Saree" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                        <input type="text" id="item-name" placeholder="e.g. Designer Georgette Saree" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-pink-500 focus:outline-none" />
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Price (₹)</label>
-                            <input type="number" id="item-price" placeholder="0.00" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                            <input type="number" id="item-price" placeholder="0.00" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-pink-500 focus:outline-none" />
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Quantity</label>
-                            <input type="number" id="item-qty" value="1" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                            <input type="number" id="item-qty" value="1" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-pink-500 focus:outline-none" />
                         </div>
                     </div>
                     <button type="button" id="btn-add-cart" class="w-full bg-slate-900 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800 transition shadow-sm">+ Add to Cart</button>
@@ -126,9 +140,9 @@
                     <div class="border-t pt-3">
                         <div class="flex justify-between items-center text-base font-black text-slate-900 mb-3">
                             <span>Grand Total:</span>
-                            <span id="cart-total" class="text-blue-600 text-xl">₹0.00</span>
+                            <span id="cart-total" class="text-pink-600 text-xl">₹0.00</span>
                         </div>
-                        <button type="button" id="btn-checkout" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-blue-700 transition shadow-lg shadow-blue-500/20">Complete Sale & Print Bill</button>
+                        <button type="button" id="btn-checkout" class="w-full bg-pink-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-pink-700 transition shadow-lg shadow-pink-500/20">Complete Sale & Print Bill</button>
                     </div>
                 </div>
             </div>
@@ -153,7 +167,7 @@
                     </div>
                     <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                         <p class="text-xs font-bold text-slate-400 uppercase">Transactions Count</p>
-                        <p id="bs-total-tx" class="text-2xl font-black text-blue-600 mt-1">0</p>
+                        <p id="bs-total-tx" class="text-2xl font-black text-pink-600 mt-1">0</p>
                     </div>
                     <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                         <p class="text-xs font-bold text-slate-400 uppercase">Net Cash Flow</p>
@@ -161,7 +175,7 @@
                     </div>
                 </div>
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center py-12">
-                    <h4 class="font-bold text-slate-700 text-sm">ClothVyapar Financial Health</h4>
+                    <h4 class="font-bold text-slate-700 text-sm">Kohinoor Fancy Store Financial Health</h4>
                     <p class="text-xs text-slate-400 mt-1">All calculations sync directly with your recorded session ledger.</p>
                 </div>
             </div>
@@ -169,7 +183,7 @@
 
         <!-- Footer -->
         <footer class="bg-white text-center py-3 text-[11px] text-slate-400 border-t">
-            ClothVyapar SaaS POS &bull; Secure Cloud Edition
+            KOHINOOR FANCY AND LADIES STORE &bull; Cloud POS Edition
         </footer>
     </div>
 
@@ -188,6 +202,12 @@
             }
         } catch (err) {
             alert("Initialization Error: " + err.message);
+        }
+
+        window.quickSelect = function(name, price) {
+            document.getElementById('item-name').value = name;
+            document.getElementById('item-price').value = price;
+            document.getElementById('item-qty').value = 1;
         }
 
         function showView(viewName) {
@@ -211,9 +231,9 @@
             document.getElementById('panel-ledger').style.display = isLedger ? 'block' : 'none';
             document.getElementById('panel-balance').style.display = isBalance ? 'block' : 'none';
 
-            document.getElementById('tab-pos').className = isPos ? 'flex-1 py-2.5 text-center rounded-xl transition bg-blue-600 text-white shadow-sm' : 'flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-blue-600';
-            document.getElementById('tab-ledger').className = isLedger ? 'flex-1 py-2.5 text-center rounded-xl transition bg-blue-600 text-white shadow-sm' : 'flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-blue-600';
-            document.getElementById('tab-balance').className = isBalance ? 'flex-1 py-2.5 text-center rounded-xl transition bg-blue-600 text-white shadow-sm' : 'flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-blue-600';
+            document.getElementById('tab-pos').className = isPos ? 'flex-1 py-2.5 text-center rounded-xl transition bg-pink-600 text-white shadow-sm' : 'flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-pink-600';
+            document.getElementById('tab-ledger').className = isLedger ? 'flex-1 py-2.5 text-center rounded-xl transition bg-pink-600 text-white shadow-sm' : 'flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-pink-600';
+            document.getElementById('tab-balance').className = isBalance ? 'flex-1 py-2.5 text-center rounded-xl transition bg-pink-600 text-white shadow-sm' : 'flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-pink-600';
         }
 
         function updateCartUI() {
@@ -285,8 +305,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('link-goto-signup').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('signup', 'Create Store Account'); });
             document.getElementById('link-goto-forgot').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('forgot', 'Recover Password'); });
-            document.getElementById('link-goto-login1').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Login to your Store'); });
-            document.getElementById('link-goto-login2').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Login to your Store'); });
+            document.getElementById('link-goto-login1').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Login to Store Portal'); });
+            document.getElementById('link-goto-login2').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Login to Store Portal'); });
 
             document.getElementById('tab-pos').addEventListener('click', () => switchTab('pos'));
             document.getElementById('tab-ledger').addEventListener('click', () => switchTab('ledger'));
@@ -316,7 +336,7 @@
                 if (error) alert("Sign Up Error: " + error.message);
                 else {
                     alert("Store account created successfully! You can now log in.");
-                    toggleAuthForm('login', 'Login to your Store');
+                    toggleAuthForm('login', 'Login to Store Portal');
                 }
             });
 
@@ -327,7 +347,7 @@
                 if (error) alert("Error: " + error.message);
                 else {
                     alert("Password recovery email sent!");
-                    toggleAuthForm('login', 'Login to your Store');
+                    toggleAuthForm('login', 'Login to Store Portal');
                 }
             });
 
@@ -336,7 +356,7 @@
                 cart = [];
                 updateCartUI();
                 showView('auth');
-                toggleAuthForm('login', 'Login to your Store');
+                toggleAuthForm('login', 'Login to Store Portal');
             });
 
             document.getElementById('btn-add-cart').addEventListener('click', () => {
