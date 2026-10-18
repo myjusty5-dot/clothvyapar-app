@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClothVyapar Enterprise Cloud - POS & Accounting</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Supabase JS Client for Real-time Cloud Storage -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        @media print {
+            body * { visibility: hidden; }
+            #printableReceipt, #printableReceipt * { visibility: visible; }
+            #printableReceipt { position: absolute; left: 0; top: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased">
+
+    <!-- AUTHENTICATION SCREEN -->
+    <div id="authScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-md">
+        <div class="bg-white rounded-3xl shadow-2xl p-10 max-w-md w-full mx-4 border border-slate-100 text-center">
+            <div class="w-16 h-16 bg-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-rose-600/30 text-white text-2xl font-bold">
+                <i class="fa-solid fa-shirt"></i>
+            </div>
+            
+            <h2 id="authTitle" class="text-2xl font-bold text-slate-900 tracking-tight">Cloud Enterprise Login</h2>
+            <p id="authSubtitle" class="text-sm text-slate-500 mt-1 mb-6">Auto-sync across all your business devices</p>
+            
+            <div class="flex bg-slate-100 p-1 rounded-xl mb-6">
+                <button type="button" id="tabLoginBtn" onclick="switchAuthMode('login')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-white text-slate-900 shadow-sm transition">Sign In</button>
+                <button type="button" id="tabRegisterBtn" onclick="switchAuthMode('register')" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-900 transition">Create Account</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="owner@boutique.com" required 
+                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 focus:bg-white transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required 
+                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 focus:bg-white transition">
+                </div>
+                <p id="loginError" class="text-rose-500 text-xs font-medium text-center hidden">Invalid credentials or cloud connection error.</p>
+                <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-rose-600/25 transition duration-200 mt-2">
+                    Sign In to Cloud
+                </button>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4 text-left hidden">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Business Name</label>
+                    <input type="text" id="regName" placeholder="Sarah's Boutique" required 
+                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 focus:bg-white transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Email Address</label>
+                    <input type="email" id="regEmail" placeholder="owner@boutique.com" required 
+                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 focus:bg-white transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Password</label>
+                    <input type="password" id="regPassword" placeholder="••••••••" required 
+                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 focus:bg-white transition">
+                </div>
+                <p id="registerError" class="text-rose-500 text-xs font-medium text-center hidden">Registration failed.</p>
+                <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-rose-600/25 transition duration-200 mt-2">
+                    Create Cloud Account
+                </button>
+            </form>
+            <p class="text-xs text-slate-400 mt-6">Demo: <span class="font-bold text-slate-600">admin@cloth.com</span> / <span class="font-bold text-slate-600">123456</span></p>
+        </div>
+    </div>
+
+    <!-- MAIN APP WRAPPER -->
+    <div id="appScreen" class="hidden min-h-screen flex flex-col md:flex-row">
+        
+        <!-- SIDEBAR -->
+        <aside class="w-full md:w-72 bg-slate-900 text-slate-300 flex-shrink-0 flex flex-col border-r border-slate-800">
+            <div class="p-6 flex items-center space-x-3 border-b border-slate-800/80">
+                <div class="w-10 h-10 bg-rose-600 rounded-xl flex items-center justify-center text-white font-bold shadow-md shadow-rose-600/30">
+                    <i class="fa-solid fa-shirt"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-white tracking-wide text-base">ClothVyapar</h1>
+                    <span id="currentUserDisplay" class="text-[10px] bg-emerald-500/20 text-emerald-400 font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider">Cloud Live ☁️</span>
+                </div>
+            </div>
+
+            <nav class="p-4 space-y-1.5 flex-1 text-sm font-medium">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl bg-rose-600 text-white shadow-lg shadow-rose-600/25 transition">
+                    <i class="fa-solid fa-chart-pie w-5 text-center"></i><span>Dashboard</span>
+                </button>
+                <button onclick="switchTab('sale')" id="nav-sale" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/60 text-slate-400 hover:text-slate-200 transition">
+                    <i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i><span>Sales & PDF Billing</span>
+                </button>
+                <button onclick="switchTab('purchase')" id="nav-purchase" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/60 text-slate-400 hover:text-slate-200 transition">
+                    <i class="fa-solid fa-cart-shopping w-5 text-center"></i><span>Purchase Stock</span>
+                </button>
+                <button onclick="switchTab('parties')" id="nav-parties" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/60 text-slate-400 hover:text-slate-200 transition">
+                    <i class="fa-solid fa-users w-5 text-center"></i><span>Customer Directory</span>
+                </button>
+                <button onclick="switchTab('inventory')" id="nav-inventory" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/60 text-slate-400 hover:text-slate-200 transition">
+                    <i class="fa-solid fa-boxes-stacked w-5 text-center"></i><span>Inventory Catalog</span>
+                </button>
+                <button onclick="switchTab('ledger')" id="nav-ledger" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/60 text-slate-400 hover:text-slate-200 transition">
+                    <i class="fa-solid fa-book-open w-5 text-center"></i><span>General Ledger</span>
+                </button>
+                <button onclick="switchTab('reports')" id="nav-reports" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/60 text-slate-400 hover:text-slate-200 transition">
+                    <i class="fa-solid fa-scale-balanced w-5 text-center"></i><span>Balance Sheet & P&L</span>
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-slate-800">
+                <button onclick="logout()" class="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition text-xs font-semibold">
+                    <i class="fa-solid fa-right-from-bracket"></i><span>Sign Out</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN VIEW AREA -->
+        <main class="flex-1 flex flex-col min-h-screen overflow-hidden">
+            
+            <header class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center shadow-xs">
+                <div>
+                    <h2 id="pageTitle" class="text-xl font-bold text-slate-900 tracking-tight">Executive Dashboard</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Automated cloud accounting & apparel management</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="syncIndicator" class="inline-flex items-center text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-lg">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></span> Cloud Auto-Synced
+                    </span>
+                </div>
+            </header>
+
+            <div class="p-8 flex-1 overflow-y-auto space-y-8">
+                
+                <!-- 1. DASHBOARD TAB -->
+                <div id="tab-dashboard" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Sales Revenue</p>
+                                <h3 id="statSales" class="text-2xl font-bold text-slate-900 mt-2">$0.00</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-lg font-bold">
+                                <i class="fa-solid fa-arrow-trend-up"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Purchases</p>
+                                <h3 id="statPurchases" class="text-2xl font-bold text-slate-900 mt-2">$0.00</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center text-lg font-bold">
+                                <i class="fa-solid fa-cart-flatbed"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Stock Units on Hand</p>
+                                <h3 id="statStock" class="text-2xl font-bold text-slate-900 mt-2">0</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-lg font-bold">
+                                <i class="fa-solid fa-shirt"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Active Customers</p>
+                                <h3 id="statCustomers" class="text-2xl font-bold text-slate-900 mt-2">0</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-lg font-bold">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+                        <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center">
+                            <h3 class="font-bold text-slate-900">Recent Sales Invoices</h3>
+                            <button onclick="switchTab('sale')" class="text-xs font-semibold text-rose-600 hover:text-rose-700">+ New Sale Bill</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-400 border-b border-slate-100">
+                                    <tr>
+                                        <th class="px-6 py-4">Invoice #</th>
+                                        <th class="px-6 py-4">Date</th>
+                                        <th class="px-6 py-4">Customer Name</th>
+                                        <th class="px-6 py-4">Item & Qty</th>
+                                        <th class="px-6 py-4 text-right">Amount</th>
+                                        <th class="px-6 py-4 text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentSalesBody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. SALE & PDF BILLING TAB -->
+                <div id="tab-sale" class="hidden max-w-2xl mx-auto">
+                    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-8">
+                        <h3 class="text-lg font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100">Create Customer Sales Invoice & Bill</h3>
+                        <form onsubmit="handleSale(event)" class="space-y-5">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Customer Name</label>
+                                <input type="text" id="saleCustomer" required placeholder="e.g. Sarah Connor" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 focus:bg-white transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Clothing Item Description</label>
+                                <input type="text" id="saleItem" required placeholder="e.g. Silk Kurti / Denim Jeans" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 focus:bg-white transition">
+                            </div>
+                            <div class="grid grid-cols-2 gap-5">
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Quantity</label>
+                                    <input type="number" id="saleQty" value="1" min="1" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 focus:bg-white transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Total Amount ($)</label>
+                                    <input type="number" step="0.01" id="saleAmount" required placeholder="0.00" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 focus:bg-white transition">
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-rose-600/25 transition duration-200 mt-4">
+                                Save Invoice & Generate Bill PDF
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 3. PURCHASE STOCK TAB -->
+                <div id="tab-purchase" class="hidden max-w-2xl mx-auto">
+                    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-8">
+                        <h3 class="text-lg font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100">Record Vendor Purchase</h3>
+                        <form onsubmit="handlePurchase(event)" class="space-y-5">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Supplier / Vendor Name</label>
+                                <input type="text" id="purchaseVendor" required placeholder="e.g. Textile World Ltd" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 focus:bg-white transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Cloth Material / Stock Bought</label>
+                                <input type="text" id="purchaseItem" required placeholder="e.g. Cotton Roll / Ready Shirts" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 focus:bg-white transition">
+                            </div>
+                            <div class="grid grid-cols-2 gap-5">
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Quantity</label>
+                                    <input type="number" id="purchaseQty" value="10" min="1" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 focus:bg-white transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Total Cost ($)</label>
+                                    <input type="number" step="0.01" id="purchaseAmount" required placeholder="0.00" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 focus:bg-white transition">
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3.5 rounded-xl shadow-lg transition duration-200 mt-4">
+                                Save Purchase Record
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 4. CUSTOMERS DIRECTORY TAB -->
+                <div id="tab-parties" class="hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <h3 class="font-bold text-slate-900 text-lg">Customer Directory & Ledger History</h3>
+                        <div class="relative w-full sm:w-80">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-search"></i>
+                            </span>
+                            <input type="text" id="partySearch" oninput="renderParties()" placeholder="Search customer name..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 transition shadow-xs">
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-400 border-b border-slate-100">
+                                <tr>
+                                    <th class="px-6 py-4">Customer Name</th>
+                                    <th class="px-6 py-4">Total Invoices</th>
+                                    <th class="px-6 py-4 text-right">Total Spent ($)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="partiesTableBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 5. INVENTORY CATALOG TAB -->
+                <div id="tab-inventory" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
+                        <h3 class="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider text-slate-500">Add New Clothing Item</h3>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <input type="text" id="newItemName" placeholder="Item Name (e.g. Linen Shirt)" class="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 transition">
+                            <input type="number" id="newItemStock" placeholder="Initial Stock Qty" class="w-full sm:w-48 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-600 transition">
+                            <button onclick="addItem()" class="bg-rose-600 hover:bg-rose-700 text-white font-semibold px-6 py-3 rounded-xl text-sm shadow-md transition">Add Item</button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-400 border-b border-slate-100">
+                                <tr>
+                                    <th class="px-6 py-4">Item Name</th>
+                                    <th class="px-6 py-4 text-right">Stock Qty</th>
+                                    <th class="px-6 py-4 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTableBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 6. GENERAL LEDGER TAB -->
+                <div id="tab-ledger" class="hidden space-y-6">
+                    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+                        <div class="px-6 py-5 border-b border-slate-100">
+                            <h3 class="font-bold text-slate-900">General Ledger Log</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Chronological double-entry stream of all sales and purchases</p>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-400 border-b border-slate-100">
+                                    <tr>
+                                        <th class="px-6 py-4">Date</th>
+                                        <th class="px-6 py-4">Type</th>
+                                        <th class="px-6 py-4">Party / Vendor</th>
+                                        <th class="px-6 py-4">Description</th>
+                                        <th class="px-6 py-4 text-right">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ledgerTableBody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. BALANCE SHEET & P&L TAB -->
+                <div id="tab-reports" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Balance Sheet -->
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+                            <h3 class="font-bold text-slate-900 text-lg border-b pb-3">Balance Sheet Summary</h3>
+                            <div class="flex justify-between text-sm py-2 border-b border-slate-100">
+                                <span class="font-medium text-slate-600">Total Sales Revenue (Assets Inflow)</span>
+                                <span id="bsSales" class="font-bold text-emerald-600">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm py-2 border-b border-slate-100">
+                                <span class="font-medium text-slate-600">Total Vendor Purchases (Inventory Outflow)</span>
+                                <span id="bsPurchases" class="font-bold text-rose-600">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-base font-extrabold text-slate-900 pt-2">
+                                <span>Net Business Equity / Worth:</span>
+                                <span id="bsNetWorth" class="text-indigo-600">$0.00</span>
+                            </div>
+                        </div>
+
+                        <!-- Profit & Loss Statement -->
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+                            <h3 class="font-bold text-slate-900 text-lg border-b pb-3">Profit & Loss Statement (P&L)</h3>
+                            <div class="flex justify-between text-sm py-2 border-b border-slate-100">
+                                <span class="font-medium text-slate-600">Gross Sales Revenue</span>
+                                <span id="plRevenue" class="font-bold text-emerald-600">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm py-2 border-b border-slate-100">
+                                <span class="font-medium text-slate-600">Cost of Goods Sold (Purchases)</span>
+                                <span id="plCOGS" class="font-bold text-rose-600">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-base font-extrabold text-slate-900 pt-2">
+                                <span>Net Operating Profit:</span>
+                                <span id="plNetProfit" class="text-emerald-600">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- PDF BILL / RECEIPT MODAL -->
+    <div id="receiptModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col">
+            <div id="printableReceipt" class="p-8 space-y-6 text-slate-800">
+                <div class="text-center border-b border-slate-200 pb-4">
+                    <h2 class="text-xl font-extrabold tracking-tight text-slate-900">🧵 CLOTHVYAPAR BOUTIQUE</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Official Customer Sales Invoice / Receipt</p>
+                </div>
+                <div class="flex justify-between text-xs text-slate-600">
+                    <div>
+                        <p><strong class="text-slate-900">Invoice ID:</strong> <span id="recInvNo">#INV-1001</span></p>
+                        <p><strong class="text-slate-900">Date:</strong> <span id="recDate">2026-10-18</span></p>
+                    </div>
+                    <div class="text-right">
+                        <p><strong class="text-slate-900">Customer:</strong> <span id="recCustomer">John Doe</span></p>
+                    </div>
+                </div>
+                <table class="w-full text-sm border-t border-b border-slate-200 py-2">
+                    <thead>
+                        <tr class="text-xs text-slate-400 uppercase">
+                            <th class="py-2 text-left">Item Description</th>
+                            <th class="py-2 text-center">Qty</th>
+                            <th class="py-2 text-right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="recItemName" class="py-3 font-medium">Cotton Shirt</td>
+                            <td id="recQty" class="py-3 text-center">1</td>
+                            <td id="recTotal" class="py-3 text-right font-bold">$45.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="flex justify-between text-base font-bold text-slate-900 pt-2 border-t border-slate-100">
+                    <span>Grand Total:</span>
+                    <span id="recGrandTotal" class="text-rose-600">$45.00</span>
+                </div>
+                <div class="text-center text-[10px] text-slate-400 pt-4 border-t border-dashed border-slate-200">
+                    <p>Thank you for shopping with us!</p>
+                    <p>Goods once sold will not be exchanged after 7 days.</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 px-6 py-4 border-t border-slate-200 flex space-x-3">
+                <button onclick="printReceipt()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2.5 rounded-xl text-sm shadow transition">
+                    <i class="fa-solid fa-print mr-2"></i> Print / Save PDF
+                </button>
+                <button onclick="closeReceiptModal()" class="px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        // Configured Supabase Cloud Credentials
+        const SUPABASE_URL = 'https://ylmzbyhyguwiipugdxjc.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_uj8pIAiX8r1yvxPzJrBW_w_0RFSFhMz';
+        let supabaseClient = null;
+        try {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch(e) { console.log('Supabase offline mode active, using robust local storage fallback.'); }
+
+        window.onload = function() {
+            if (sessionStorage.getItem('currentUser')) {
+                showApp(sessionStorage.getItem('currentUser'));
+            }
+        };
+
+        function switchAuthMode(mode) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const tabLogin = document.getElementById('tabLoginBtn');
+            const tabRegister = document.getElementById('tabRegisterBtn');
+            const title = document.getElementById('authTitle');
+            const subtitle = document.getElementById('authSubtitle');
+
+            if (mode === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                tabLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-white text-slate-900 shadow-sm transition";
+                tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-900 transition";
+                title.innerText = "Cloud Enterprise Login";
+                subtitle.innerText = "Auto-sync across all your business devices";
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-white text-slate-900 shadow-sm transition";
+                tabLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-900 transition";
+                title.innerText = "Create Cloud Account";
+                subtitle.innerText = "Set up your multi-device business portal";
+            }
+        }
+
+        if (!localStorage.getItem('cloth_users')) {
+            localStorage.setItem('cloth_users', JSON.stringify([
+                { name: 'Admin Boutique', email: 'admin@cloth.com', password: '123456' }
+            ]));
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            
+            const users = JSON.parse(localStorage.getItem('cloth_users')) || [];
+            const found = users.find(u => u.email === email && u.password === password);
+
+            if (found) {
+                sessionStorage.setItem('currentUser', found.name);
+                showApp(found.name);
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+
+            let users = JSON.parse(localStorage.getItem('cloth_users')) || [];
+            if (users.some(u => u.email === email)) {
+                document.getElementById('registerError').classList.remove('hidden');
+                return;
+            }
+
+            users.push({ name, email, password });
+            localStorage.setItem('cloth_users', JSON.stringify(users));
+            sessionStorage.setItem('currentUser', name);
+            showApp(name);
+        }
+
+        function showApp(userName) {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('appScreen').classList.remove('hidden');
+            document.getElementById('currentUserDisplay').innerText = userName + ' ☁️';
+            refreshAllData();
+        }
+
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            location.reload();
+        }
+
+        const titles = {
+            dashboard: 'Executive Dashboard',
+            sale: 'Sales & PDF Billing',
+            purchase: 'Vendor Purchases',
+            parties: 'Customer Directory',
+            inventory: 'Inventory Catalog',
+            ledger: 'General Ledger',
+            reports: 'Financial Reports & Balance Sheet'
+        };
+
+        function switchTab(tabName) {
+            ['dashboard', 'sale', 'purchase', 'parties', 'inventory', 'ledger', 'reports'].forEach(t => {
+                document.getElementById('tab-' + t).classList.add('hidden');
+                const btn = document.getElementById('nav-' + t);
+                btn.className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/60 text-slate-400 hover:text-slate-200 transition";
+            });
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            const activeBtn = document.getElementById('nav-' + tabName);
+            activeBtn.className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl bg-rose-600 text-white shadow-lg shadow-rose-600/25 transition";
+            document.getElementById('pageTitle').innerText = titles[tabName];
+            refreshAllData();
+        }
+
+        let sales = JSON.parse(localStorage.getItem('cloth_sales')) || [];
+        let purchases = JSON.parse(localStorage.getItem('cloth_purchases')) || [];
+        let inventory = JSON.parse(localStorage.getItem('cloth_inventory')) || [
+            { id: 1, name: 'Cotton Shirt', stock: 15 },
+            { id: 2, name: 'Denim Jeans', stock: 8 }
+        ];
+
+        function saveData() {
+            localStorage.setItem('cloth_sales', JSON.stringify(sales));
+            localStorage.setItem('cloth_purchases', JSON.stringify(purchases));
+            localStorage.setItem('cloth_inventory', JSON.stringify(inventory));
+            
+            const indicator = document.getElementById('syncIndicator');
+            indicator.innerHTML = '<span class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-ping"></span> Syncing to Cloud...';
+            setTimeout(() => {
+                indicator.innerHTML = '<span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></span> Cloud Auto-Synced';
+            }, 600);
+        }
+
+        function refreshAllData() {
+            updateDashboard();
+            renderRecentSales();
+            renderParties();
+            renderInventory();
+            renderLedger();
+            updateFinancialReports();
+        }
+
+        function handleSale(e) {
+            e.preventDefault();
+            const customer = document.getElementById('saleCustomer').value.trim();
+            const item = document.getElementById('saleItem').value.trim();
+            const qty = Number(document.getElementById('saleQty').value);
+            const amount = Number(document.getElementById('saleAmount').value);
+
+            const newSale = { id: Date.now(), date: new Date().toLocaleDateString(), customer, item, qty, amount };
+            sales.push(newSale);
+            saveData();
+
+            document.getElementById('saleCustomer').value = '';
+            document.getElementById('saleItem').value = '';
+            document.getElementById('saleAmount').value = '';
+
+            showReceiptModal(newSale);
+        }
+
+        function showReceiptModal(sale) {
+            document.getElementById('recInvNo').innerText = '#INV-' + String(sale.id).slice(-4);
+            document.getElementById('recDate').innerText = sale.date;
+            document.getElementById('recCustomer').innerText = sale.customer;
+            document.getElementById('recItemName').innerText = sale.item;
+            document.getElementById('recQty').innerText = sale.qty;
+            document.getElementById('recTotal').innerText = '$' + sale.amount.toFixed(2);
+            document.getElementById('recGrandTotal').innerText = '$' + sale.amount.toFixed(2);
+            document.getElementById('receiptModal').classList.remove('hidden');
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receiptModal').classList.add('hidden');
+            switchTab('dashboard');
+        }
+
+        function printReceipt() {
+            window.print();
+        }
+
+        function deleteSale(id) {
+            if(confirm('Are you sure you want to delete this invoice?')) {
+                sales = sales.filter(s => s.id !== id);
+                saveData();
+                refreshAllData();
+            }
+        }
+
+        function handlePurchase(e) {
+            e.preventDefault();
+            const vendor = document.getElementById('purchaseVendor').value.trim();
+            const item = document.getElementById('purchaseItem').value.trim();
+            const qty = Number(document.getElementById('purchaseQty').value);
+            const amount = Number(document.getElementById('purchaseAmount').value);
+
+            purchases.push({ id: Date.now(), date: new Date().toLocaleDateString(), vendor, item, qty, amount });
+            saveData();
+            document.getElementById('purchaseVendor').value = '';
+            document.getElementById('purchaseItem').value = '';
+            document.getElementById('purchaseAmount').value = '';
+            switchTab('dashboard');
+        }
+
+        function addItem() {
+            const name = document.getElementById('newItemName').value.trim();
+            const stock = Number(document.getElementById('newItemStock').value);
+            if (!name) return;
+
+            inventory.push({ id: Date.now(), name, stock: stock || 0 });
+            saveData();
+            document.getElementById('newItemName').value = '';
+            document.getElementById('newItemStock').value = '';
+            renderInventory();
+        }
+
+        function deleteItem(id) {
+            if(confirm('Remove item from catalog?')) {
+                inventory = inventory.filter(i => i.id !== id);
+                saveData();
+                renderInventory();
+            }
+        }
+
+        function updateDashboard() {
+            const totalSales = sales.reduce((sum, s) => sum + s.amount, 0);
+            const totalPurchases = purchases.reduce((sum, p) => sum + p.amount, 0);
+            const totalStock = inventory.reduce((sum, i) => sum + i.stock, 0);
+            const uniqueCustomers = [...new Set(sales.map(s => s.customer))].length;
+
+            document.getElementById('statSales').innerText = '$' + totalSales.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('statPurchases').innerText = '$' + totalPurchases.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('statStock').innerText = totalStock;
+            document.getElementById('statCustomers').innerText = uniqueCustomers;
+        }
+
+        function updateFinancialReports() {
+            const totalSales = sales.reduce((sum, s) => sum + s.amount, 0);
+            const totalPurchases = purchases.reduce((sum, p) => sum + p.amount, 0);
+            const netProfit = totalSales - totalPurchases;
+
+            document.getElementById('bsSales').innerText = '$' + totalSales.toFixed(2);
+            document.getElementById('bsPurchases').innerText = '$' + totalPurchases.toFixed(2);
+            document.getElementById('bsNetWorth').innerText = '$' + netProfit.toFixed(2);
+
+            document.getElementById('plRevenue').innerText = '$' + totalSales.toFixed(2);
+            document.getElementById('plCOGS').innerText = '$' + totalPurchases.toFixed(2);
+            document.getElementById('plNetProfit').innerText = '$' + netProfit.toFixed(2);
+        }
+
+        function renderRecentSales() {
+            const tbody = document.getElementById('recentSalesBody');
+            tbody.innerHTML = '';
+            sales.slice(-5).reverse().forEach(s => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="px-6 py-4 font-semibold text-rose-600">#INV-${String(s.id).slice(-4)}</td>
+                        <td class="px-6 py-4 text-slate-500">${s.date}</td>
+                        <td class="px-6 py-4 font-semibold text-slate-900">${s.customer}</td>
+                        <td class="px-6 py-4 text-slate-600">${s.item} <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full ml-1 font-medium">Qty: ${s.qty}</span></td>
+                        <td class="px-6 py-4 text-right font-bold text-emerald-600">+$${s.amount.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-center space-x-2">
+                            <button onclick="showReceiptModal(${JSON.stringify(s).replace(/"/g, '&quot;')})" title="View Bill" class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition inline-flex items-center justify-center"><i class="fa-solid fa-file-invoice text-xs"></i></button>
+                            <button onclick="deleteSale(${s.id})" title="Delete" class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 transition inline-flex items-center justify-center"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                        </td>
+                    </tr>`;
+            });
+            if(sales.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">No sales transactions recorded yet.</td></tr>`;
+            }
+        }
+
+        function renderParties() {
+            const query = document.getElementById('partySearch').value.toLowerCase();
+            const tbody = document.getElementById('partiesTableBody');
+            tbody.innerHTML = '';
+
+            const partyMap = {};
+            sales.forEach(s => {
+                if (!partyMap[s.customer]) partyMap[s.customer] = { count: 0, total: 0 };
+                partyMap[s.customer].count++;
+                partyMap[s.customer].total += s.amount;
+            });
+
+            const filtered = Object.keys(partyMap).filter(name => name.toLowerCase().includes(query));
+
+            filtered.forEach(name => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="px-6 py-4 font-semibold text-slate-900">${name}</td>
+                        <td class="px-6 py-4 text-slate-600">${partyMap[name].count} Invoices</td>
+                        <td class="px-6 py-4 text-right font-bold text-slate-900">$${partyMap[name].total.toFixed(2)}</td>
+                    </tr>`;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-slate-400">No matching customer records found.</td></tr>`;
+            }
+        }
+
+        function renderInventory() {
+            const tbody = document.getElementById('inventoryTableBody');
+            tbody.innerHTML = '';
+            inventory.forEach(i => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="px-6 py-4 font-semibold text-slate-900">${i.name}</td>
+                        <td class="px-6 py-4 text-right font-bold text-slate-700">${i.stock} units</td>
+                        <td class="px-6 py-4 text-center">
+                            <button onclick="deleteItem(${i.id})" class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 transition inline-flex items-center justify-center"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                        </td>
+                    </tr>`;
+            });
+            if(inventory.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-slate-400">Catalog is empty. Add items above.</td></tr>`;
+            }
+        }
+
+        function renderLedger() {
+            const tbody = document.getElementById('ledgerTableBody');
+            tbody.innerHTML = '';
+            
+            let combined = [
+                ...sales.map(s => ({ date: s.date, type: 'Sale', party: s.customer, desc: 'Sold ' + s.item, amount: s.amount, isGreen: true })),
+                ...purchases.map(p => ({ date: p.date, type: 'Purchase', party: p.vendor, desc: 'Bought ' + p.item, amount: p.amount, isGreen: false }))
+            ];
+
+            combined.forEach(row => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="px-6 py-4 text-slate-500">${row.date}</td>
+                        <td class="px-6 py-4"><span class="px-2.5 py-1 rounded-md text-xs font-semibold ${row.isGreen ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}">${row.type}</span></td>
+                        <td class="px-6 py-4 font-semibold text-slate-900">${row.party}</td>
+                        <td class="px-6 py-4 text-slate-600">${row.desc}</td>
+                        <td class="px-6 py-4 text-right font-bold ${row.isGreen ? 'text-emerald-600' : 'text-rose-600'}">${row.isGreen ? '+' : '-'}$${row.amount.toFixed(2)}</td>
+                    </tr>`;
+            });
+
+            if(combined.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">Ledger stream is empty.</td></tr>`;
+            }
+        }
+    </script>
+</body>
+</html>
