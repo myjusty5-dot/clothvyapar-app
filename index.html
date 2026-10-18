@@ -1,164 +1,233 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClothVyapar App</title>
+    <title>ClothVyapar POS & Accounting</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-gray-50 flex items-center justify-center min-h-screen">
+<body class="bg-gray-100 min-h-screen flex flex-col justify-between">
 
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 id="form-title" class="text-2xl font-bold mb-6 text-center text-gray-800">ClothVyapar Login</h2>
+    <!-- AUTHENTICATION CONTAINER -->
+    <div id="auth-container" class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+            <h2 id="form-title" class="text-2xl font-bold mb-6 text-center text-gray-800">ClothVyapar Login</h2>
 
-        <!-- Login Form -->
-        <div id="login-section">
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                <input type="email" id="login-email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your email" required />
-            </div>
-            
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                <input type="password" id="login-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your password" required />
-            </div>
-
-            <button type="button" id="btn-login" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition mb-3 font-semibold">Login</button>
-
-            <div class="flex justify-between text-sm">
-                <a href="#" id="link-goto-signup" class="text-blue-600 hover:underline">Create Account</a>
-                <a href="#" id="link-goto-forgot" class="text-blue-600 hover:underline">Forgot Password?</a>
-            </div>
-        </div>
-
-        <!-- Sign Up Form -->
-        <div id="signup-section" style="display: none;" class="mt-4">
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">New Email</label>
-                <input type="email" id="signup-email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter your email" required />
-            </div>
-            
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">New Password (min 6 chars)</label>
-                <input type="password" id="signup-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Create a password" required />
+            <!-- Login Form -->
+            <div id="login-section">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                    <input type="email" id="login-email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your email" required />
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                    <input type="password" id="login-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your password" required />
+                </div>
+                <button type="button" id="btn-login" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition mb-3 font-semibold">Login</button>
+                <div class="flex justify-between text-sm">
+                    <a href="#" id="link-goto-signup" class="text-blue-600 hover:underline">Create Account</a>
+                    <a href="#" id="link-goto-forgot" class="text-blue-600 hover:underline">Forgot Password?</a>
+                </div>
             </div>
 
-            <button type="button" id="btn-signup" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition mb-3 font-semibold">Sign Up</button>
-            <div class="text-center">
-                <a href="#" id="link-goto-login1" class="text-sm text-blue-600 hover:underline">Back to Login</a>
+            <!-- Sign Up Form -->
+            <div id="signup-section" style="display: none;" class="mt-4">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">New Email</label>
+                    <input type="email" id="signup-email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter your email" required />
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">New Password (min 6 chars)</label>
+                    <input type="password" id="signup-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Create a password" required />
+                </div>
+                <button type="button" id="btn-signup" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition mb-3 font-semibold">Sign Up</button>
+                <div class="text-center">
+                    <a href="#" id="link-goto-login1" class="text-sm text-blue-600 hover:underline">Back to Login</a>
+                </div>
             </div>
-        </div>
 
-        <!-- Forgot Password Modal -->
-        <div id="forgot-password-modal" style="display: none;" class="mt-4">
-            <p class="text-xs text-gray-600 mb-3">Enter your account email to receive a password reset link.</p>
-            <input type="email" id="reset-email" class="w-full px-3 py-2 border rounded-lg mb-3 text-sm" placeholder="Enter your email" />
-            <div class="flex space-x-2 mb-3">
-                <button type="button" id="btn-reset" class="w-full bg-blue-600 text-white text-sm py-2 rounded-lg hover:bg-blue-700 font-semibold">Send Reset Link</button>
+            <!-- Forgot Password Modal -->
+            <div id="forgot-password-modal" style="display: none;" class="mt-4">
+                <p class="text-xs text-gray-600 mb-3">Enter your account email to receive a password reset link.</p>
+                <input type="email" id="reset-email" class="w-full px-3 py-2 border rounded-lg mb-3 text-sm" placeholder="Enter your email" />
+                <button type="button" id="btn-reset" class="w-full bg-blue-600 text-white text-sm py-2 rounded-lg hover:bg-blue-700 font-semibold mb-3">Send Reset Link</button>
+                <div class="text-center">
+                    <a href="#" id="link-goto-login2" class="text-sm text-blue-600 hover:underline">Back to Login</a>
+                </div>
             </div>
-            <div class="text-center">
-                <a href="#" id="link-goto-login2" class="text-sm text-blue-600 hover:underline">Back to Login</a>
-            </div>
-        </div>
-
-        <!-- Update Password Box -->
-        <div id="update-password-modal" style="display: none;" class="mt-4 p-4 border-2 border-blue-500 rounded-lg bg-white">
-            <h3 class="font-bold text-gray-800 mb-2">Set New Password</h3>
-            <input type="password" id="new-password" class="w-full px-3 py-2 border rounded-lg mb-3 text-sm" placeholder="Enter new password (min 6 chars)" />
-            <button type="button" id="btn-update-pass" class="w-full bg-green-600 text-white text-sm py-2 rounded-lg hover:bg-green-700 font-semibold">Update Password</button>
-        </div>
-
-        <!-- Dashboard View (Shown after login) -->
-        <div id="dashboard-section" style="display: none;" class="text-center">
-            <p class="text-gray-600 mb-4">Welcome to your ClothVyapar Dashboard!</p>
-            <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                <p id="user-email-display" class="text-sm font-semibold text-gray-800"></p>
-            </div>
-            <button type="button" id="btn-logout" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition font-semibold">Logout</button>
         </div>
     </div>
 
-    <!-- JavaScript Logic -->
+    <!-- DASHBOARD CONTAINER (POS & LEDGER) -->
+    <div id="dashboard-container" style="display: none;" class="flex flex-col min-h-screen justify-between w-full">
+        <!-- Top Navigation Bar -->
+        <header class="bg-blue-600 text-white shadow-md p-4 flex justify-between items-center">
+            <h1 class="text-lg font-bold">ClothVyapar POS</h1>
+            <div class="flex items-center space-x-3">
+                <span id="user-email-display" class="text-xs bg-blue-700 px-2 py-1 rounded"></span>
+                <button type="button" id="btn-logout" class="bg-red-500 text-xs px-3 py-1 rounded hover:bg-red-600 font-semibold">Logout</button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-4 max-w-4xl mx-auto w-full flex-grow">
+            <!-- Tabs Switcher -->
+            <div class="flex border-b mb-4 bg-white rounded-t-lg shadow-sm">
+                <button type="button" id="tab-pos" class="flex-1 py-3 text-center font-bold text-blue-600 border-b-2 border-blue-600">POS Billing</button>
+                <button type="button" id="tab-ledger" class="flex-1 py-3 text-center font-medium text-gray-500">Sales Ledger</button>
+            </div>
+
+            <!-- POS Tab Panel -->
+            <div id="panel-pos" class="space-y-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm">
+                    <h3 class="font-bold text-gray-700 mb-2">Add Item to Bill</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-2">
+                        <input type="text" id="item-name" placeholder="Item Name (e.g. Cotton Shirt)" class="px-3 py-2 border rounded-lg text-sm" />
+                        <input type="number" id="item-price" placeholder="Price (₹)" class="px-3 py-2 border rounded-lg text-sm" />
+                        <input type="number" id="item-qty" placeholder="Qty" value="1" class="px-3 py-2 border rounded-lg text-sm" />
+                    </div>
+                    <button type="button" id="btn-add-cart" class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold text-sm hover:bg-green-700">Add to Cart</button>
+                </div>
+
+                <!-- Cart Summary -->
+                <div class="bg-white p-4 rounded-xl shadow-sm">
+                    <h3 class="font-bold text-gray-700 mb-2">Current Bill Cart</h3>
+                    <div id="cart-list" class="divide-y max-h-48 overflow-y-auto mb-3 text-sm">
+                        <p class="text-gray-400 text-center py-2">Cart is empty</p>
+                    </div>
+                    <div class="flex justify-between font-bold text-lg border-t pt-2 mb-3">
+                        <span>Total:</span>
+                        <span id="cart-total">₹0.00</span>
+                    </div>
+                    <button type="button" id="btn-checkout" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700">Complete Sale</button>
+                </div>
+            </div>
+
+            <!-- Ledger Tab Panel -->
+            <div id="panel-ledger" style="display: none;" class="bg-white p-4 rounded-xl shadow-sm">
+                <h3 class="font-bold text-gray-700 mb-3">Transaction Records</h3>
+                <div id="ledger-list" class="divide-y max-h-96 overflow-y-auto text-sm">
+                    <p class="text-gray-400 text-center py-4">No transactions recorded yet.</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white text-center py-3 text-xs text-gray-500 border-t">
+            ClothVyapar Cloud POS &bull; Mobile Edition
+        </footer>
+    </div>
+
+    <!-- JavaScript Application Logic -->
     <script>
         const SUPABASE_URL = 'https://ylmzbyhyguwiipugdxjc.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_uj8pIAiX8r1yvxPzJrBW_w_0RFSFhMz';
 
-        // Safe Supabase initialization across CDN variants
         let supabaseClient;
+        let cart = [];
+        let transactions = [];
+
         try {
             if (window.supabase && typeof window.supabase.createClient === 'function') {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            } else if (typeof createClient === 'function') {
-                supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            } else {
-                alert("Error: Supabase library failed to load from CDN. Please refresh the page.");
             }
         } catch (err) {
             alert("Initialization Error: " + err.message);
         }
 
-        function toggleView(sectionId, titleText) {
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('signup-section').style.display = 'none';
-            document.getElementById('forgot-password-modal').style.display = 'none';
-            document.getElementById('update-password-modal').style.display = 'none';
-            document.getElementById('dashboard-section').style.display = 'none';
-            
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) targetSection.style.display = 'block';
-            
-            const formTitle = document.getElementById('form-title');
-            if (formTitle) formTitle.innerText = titleText;
+        function showView(viewName) {
+            document.getElementById('auth-container').style.display = viewName === 'auth' ? 'flex' : 'none';
+            document.getElementById('dashboard-container').style.display = viewName === 'dashboard' ? 'flex' : 'none';
         }
 
-        function showDashboard(email) {
-            toggleView('dashboard-section', 'ClothVyapar POS');
-            document.getElementById('user-email-display').innerText = 'Logged in as: ' + email;
+        function toggleAuthForm(formId, title) {
+            document.getElementById('login-section').style.display = formId === 'login' ? 'block' : 'none';
+            document.getElementById('signup-section').style.display = formId === 'signup' ? 'block' : 'none';
+            document.getElementById('forgot-password-modal').style.display = formId === 'forgot' ? 'block' : 'none';
+            document.getElementById('form-title').innerText = title;
         }
 
-        // Event listeners (Prevents inline JavaScript onclick handler failures)
+        function switchTab(tabName) {
+            const isPos = tabName === 'pos';
+            document.getElementById('panel-pos').style.display = isPos ? 'block' : 'none';
+            document.getElementById('panel-ledger').style.display = isPos ? 'none' : 'block';
+            
+            document.getElementById('tab-pos').className = isPos ? 'flex-1 py-3 text-center font-bold text-blue-600 border-b-2 border-blue-600' : 'flex-1 py-3 text-center font-medium text-gray-500';
+            document.getElementById('tab-ledger').className = !isPos ? 'flex-1 py-3 text-center font-bold text-blue-600 border-b-2 border-blue-600' : 'flex-1 py-3 text-center font-medium text-gray-500';
+        }
+
+        function updateCartUI() {
+            const list = document.getElementById('cart-list');
+            const totalEl = document.getElementById('cart-total');
+            if (cart.length === 0) {
+                list.innerHTML = '<p class="text-gray-400 text-center py-2">Cart is empty</p>';
+                totalEl.innerText = '₹0.00';
+                return;
+            }
+            let html = '';
+            let total = 0;
+            cart.forEach((item, index) => {
+                const subtotal = item.price * item.qty;
+                total += subtotal;
+                html += `<div class="py-2 flex justify-between items-center">
+                    <div><span class="font-medium">${item.name}</span> <span class="text-xs text-gray-500">(${item.qty} x ₹${item.price})</span></div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-semibold">₹${subtotal}</span>
+                        <button onclick="removeFromCart(${index})" class="text-red-500 text-xs px-1">✕</button>
+                    </div>
+                </div>`;
+            });
+            list.innerHTML = html;
+            totalEl.innerText = '₹' + total.toFixed(2);
+        }
+
+        window.removeFromCart = function(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function updateLedgerUI() {
+            const ledgerList = document.getElementById('ledger-list');
+            if (transactions.length === 0) {
+                ledgerList.innerHTML = '<p class="text-gray-400 text-center py-4">No transactions recorded yet.</p>';
+                return;
+            }
+            let html = '';
+            transactions.forEach((tx) => {
+                html += `<div class="py-3 flex justify-between items-center">
+                    <div>
+                        <p class="font-semibold text-gray-800">Sale #${tx.id} (${tx.itemsCount} items)</p>
+                        <p class="text-xs text-gray-400">${tx.date}</p>
+                    </div>
+                    <span class="font-bold text-green-600">₹${tx.total.toFixed(2)}</span>
+                </div>`;
+            });
+            ledgerList.innerHTML = html;
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Auth navigation links
+            document.getElementById('link-goto-signup').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('signup', 'Create Account'); });
+            document.getElementById('link-goto-forgot').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('forgot', 'Reset Password'); });
+            document.getElementById('link-goto-login1').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'ClothVyapar Login'); });
+            document.getElementById('link-goto-login2').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'ClothVyapar Login'); });
 
-            // Navigation Links
-            document.getElementById('link-goto-signup').addEventListener('click', (e) => {
-                e.preventDefault();
-                toggleView('signup-section', 'Create Account');
-            });
-
-            document.getElementById('link-goto-forgot').addEventListener('click', (e) => {
-                e.preventDefault();
-                toggleView('forgot-password-modal', 'Reset Password');
-            });
-
-            document.getElementById('link-goto-login1').addEventListener('click', (e) => {
-                e.preventDefault();
-                toggleView('login-section', 'ClothVyapar Login');
-            });
-
-            document.getElementById('link-goto-login2').addEventListener('click', (e) => {
-                e.preventDefault();
-                toggleView('login-section', 'ClothVyapar Login');
-            });
+            // Tabs toggle
+            document.getElementById('tab-pos').addEventListener('click', () => switchTab('pos'));
+            document.getElementById('tab-ledger').addEventListener('click', () => switchTab('ledger'));
 
             // Login Button
             document.getElementById('btn-login').addEventListener('click', async () => {
                 const email = document.getElementById('login-email').value;
                 const password = document.getElementById('login-password').value;
-
-                if (!email || !password) {
-                    alert("Please fill in both email and password.");
-                    return;
-                }
-
-                if (!supabaseClient) return alert("Supabase client not connected.");
-
+                if (!email || !password) return alert("Please fill in both email and password.");
+                
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-                if (error) {
-                    alert("Login Error: " + error.message);
-                } else {
-                    showDashboard(data.user.email);
+                if (error) alert("Login Error: " + error.message);
+                else {
+                    document.getElementById('user-email-display').innerText = data.user.email;
+                    showView('dashboard');
                 }
             });
 
@@ -166,86 +235,74 @@
             document.getElementById('btn-signup').addEventListener('click', async () => {
                 const email = document.getElementById('signup-email').value;
                 const password = document.getElementById('signup-password').value;
+                if (!email || !password || password.length < 6) return alert("Enter email and password (min 6 chars).");
 
-                if (!email || !password || password.length < 6) {
-                    alert("Please enter a valid email and password (minimum 6 characters).");
-                    return;
-                }
-
-                if (!supabaseClient) return alert("Supabase client not connected.");
-
-                const { data, error } = await supabaseClient.auth.signUp({ email, password });
-
-                if (error) {
-                    alert("Sign Up Error: " + error.message);
-                } else {
+                const { error } = await supabaseClient.auth.signUp({ email, password });
+                if (error) alert("Sign Up Error: " + error.message);
+                else {
                     alert("Account created successfully! You can now log in.");
-                    toggleView('login-section', 'ClothVyapar Login');
+                    toggleAuthForm('login', 'ClothVyapar Login');
                 }
             });
 
-            // Send Reset Link Button
+            // Reset Password Button
             document.getElementById('btn-reset').addEventListener('click', async () => {
                 const email = document.getElementById('reset-email').value;
-
-                if (!email) {
-                    alert("Please enter your email address.");
-                    return;
-                }
-
-                if (!supabaseClient) return alert("Supabase client not connected.");
-
-                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-                    redirectTo: window.location.href
-                });
-
-                if (error) {
-                    alert("Error: " + error.message);
-                } else {
-                    alert("Password reset email sent! Check your inbox.");
-                    toggleView('login-section', 'ClothVyapar Login');
+                if (!email) return alert("Please enter your email.");
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
+                if (error) alert("Error: " + error.message);
+                else {
+                    alert("Password reset email sent!");
+                    toggleAuthForm('login', 'ClothVyapar Login');
                 }
             });
 
             // Logout Button
             document.getElementById('btn-logout').addEventListener('click', async () => {
-                if (supabaseClient) await supabaseClient.auth.signOut();
-                document.getElementById('login-email').value = '';
-                document.getElementById('login-password').value = '';
-                toggleView('login-section', 'ClothVyapar Login');
+                await supabaseClient.auth.signOut();
+                cart = [];
+                updateCartUI();
+                showView('auth');
+                toggleAuthForm('login', 'ClothVyapar Login');
             });
 
-            // Update Password Button
-            document.getElementById('btn-update-pass').addEventListener('click', async () => {
-                const newPassword = document.getElementById('new-password').value;
+            // Add to Cart
+            document.getElementById('btn-add-cart').addEventListener('click', () => {
+                const name = document.getElementById('item-name').value.trim();
+                const price = parseFloat(document.getElementById('item-price').value);
+                const qty = parseInt(document.getElementById('item-qty').value);
 
-                if (!newPassword || newPassword.length < 6) {
-                    alert("Password must be at least 6 characters.");
+                if (!name || isNaN(price) || price <= 0 || isNaN(qty) || qty <= 0) {
+                    alert("Please enter valid item details.");
                     return;
                 }
 
-                if (!supabaseClient) return alert("Supabase client not connected.");
-
-                const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
-
-                if (error) {
-                    alert("Error: " + error.message);
-                } else {
-                    alert("Password updated successfully! You can now log in.");
-                    toggleView('login-section', 'ClothVyapar Login');
-                }
+                cart.push({ name, price, qty });
+                document.getElementById('item-name').value = '';
+                document.getElementById('item-price').value = '';
+                document.getElementById('item-qty').value = '1';
+                updateCartUI();
             });
 
-            // Listen for Auth State changes
-            if (supabaseClient) {
-                supabaseClient.auth.onAuthStateChange((event, session) => {
-                    if (event === 'PASSWORD_RECOVERY') {
-                        toggleView('update-password-modal', 'Reset Password');
-                    } else if (event === 'SIGNED_IN' && session) {
-                        showDashboard(session.user.email);
-                    }
+            // Checkout / Complete Sale
+            document.getElementById('btn-checkout').addEventListener('click', () => {
+                if (cart.length === 0) return alert("Cart is empty!");
+                let total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                let itemsCount = cart.reduce((sum, item) => sum + item.qty, 0);
+
+                transactions.unshift({
+                    id: Math.floor(1000 + Math.random() * 9000),
+                    itemsCount,
+                    total,
+                    date: new Date().toLocaleTimeString() + ' ' + new Date().toLocaleDateString()
                 });
-            }
+
+                cart = [];
+                updateCartUI();
+                updateLedgerUI();
+                alert("Sale completed successfully!");
+                switchTab('ledger');
+            });
         });
     </script>
 </body>
