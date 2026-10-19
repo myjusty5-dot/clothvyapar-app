@@ -26,8 +26,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
                 </div>
-                <h1 class="text-xl font-black text-slate-900 tracking-tight">Welcome Back</h1>
-                <p class="text-xs text-slate-400 mt-1">Sign in to manage your boutique portal</p>
+                <h1 class="text-xl font-black text-slate-900 tracking-tight">Kohinoor Portal</h1>
+                <p class="text-xs text-slate-400 mt-1">Smart Cloud POS & Accounting Suite</p>
             </div>
             
             <h2 id="form-title" class="text-sm font-bold mb-4 text-slate-700 text-center uppercase tracking-wider">Store Portal Login</h2>
@@ -49,17 +49,31 @@
                 </div>
             </div>
 
-            <!-- Sign Up Form -->
-            <div id="signup-section" style="display: none;" class="mt-2">
-                <div class="mb-4">
+            <!-- Sign Up Form (With Store Details) -->
+            <div id="signup-section" style="display: none;" class="mt-2 space-y-3">
+                <div>
+                    <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Store / Shop Name</label>
+                    <input type="text" id="store-name" value="KOHINOOR FANCY AND LADIES STORE" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" required />
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Store Address</label>
+                        <input type="text" id="store-address" value="Birgunj" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" required />
+                    </div>
+                    <div>
+                        <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">PAN / VAT Number</label>
+                        <input type="text" id="store-pan" value="600000000" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" required />
+                    </div>
+                </div>
+                <div>
                     <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Email Address</label>
-                    <input type="email" id="signup-email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 transition" placeholder="store@example.com" required />
+                    <input type="email" id="signup-email" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" placeholder="store@example.com" required />
                 </div>
-                <div class="mb-5">
+                <div>
                     <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Password (Min 6 Chars)</label>
-                    <input type="password" id="signup-password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 transition" placeholder="••••••••" required />
+                    <input type="password" id="signup-password" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" placeholder="••••••••" required />
                 </div>
-                <button type="button" id="btn-signup" class="w-full bg-rose-600 text-white py-3.5 rounded-2xl hover:bg-rose-700 transition font-bold shadow-lg shadow-rose-600/20 text-sm mb-4">Register New Account</button>
+                <button type="button" id="btn-signup" class="w-full bg-rose-600 text-white py-3 rounded-2xl hover:bg-rose-700 transition font-bold shadow-lg text-sm mb-2">Register Store</button>
                 <div class="text-center">
                     <a href="#" id="link-goto-login1" class="text-xs text-rose-600 font-medium hover:underline">← Back to Login</a>
                 </div>
@@ -77,30 +91,30 @@
         </div>
     </div>
 
-    <!-- DASHBOARD CONTAINER (Pro Sidebar Layout) -->
-    <div id="dashboard-container" style="display: none;" class="flex min-h-screen w-full">
+    <!-- DASHBOARD CONTAINER (Pro Left Sidebar Layout) -->
+    <div id="dashboard-container" style="display: none;" class="flex min-h-screen w-full bg-slate-100">
         
-        <!-- Left Sidebar Column -->
-        <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between hidden md:flex no-print shadow-xl">
+        <!-- Permanent Left Sidebar Column -->
+        <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between shrink-0 no-print shadow-2xl min-h-screen">
             <div>
-                <!-- Brand Header -->
+                <!-- Brand Header in Sidebar -->
                 <div class="p-5 border-b border-slate-800">
                     <span class="bg-rose-600 text-white font-black text-[10px] uppercase px-2 py-0.5 rounded">NP VAT 13%</span>
-                    <h2 class="font-black text-white text-sm mt-2 tracking-wide">Kohinoor Fancy</h2>
-                    <p class="text-[11px] text-slate-400">Ladies Store Portal</p>
+                    <h2 id="sidebar-store-name" class="font-black text-white text-sm mt-2 tracking-wide truncate">KOHINOOR FANCY</h2>
+                    <p id="sidebar-store-meta" class="text-[11px] text-slate-400 truncate">PAN: 600000000</p>
                 </div>
 
                 <!-- Sidebar Navigation Links -->
                 <nav class="p-3 space-y-1.5 text-xs font-semibold">
-                    <button type="button" id="nav-pos" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition bg-rose-600 text-white shadow-sm">
+                    <button type="button" id="nav-pos" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition bg-rose-600 text-white shadow-sm text-left">
                         <span>📄</span>
                         <span>Tax Invoice POS</span>
                     </button>
-                    <button type="button" id="nav-ledger" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300">
+                    <button type="button" id="nav-ledger" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left">
                         <span>📖</span>
                         <span>Sales & Journals</span>
                     </button>
-                    <button type="button" id="nav-trial" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300">
+                    <button type="button" id="nav-trial" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left">
                         <span>📊</span>
                         <span>Trial Balance</span>
                     </button>
@@ -115,25 +129,19 @@
         </aside>
 
         <!-- Main Content Area -->
-        <div class="flex-grow flex flex-col justify-between">
-            <!-- Mobile Top Bar (Visible only on small screens) -->
+        <div class="flex-grow flex flex-col justify-between overflow-x-hidden">
+            <!-- Mobile Top Header Bar -->
             <header class="bg-slate-900 text-white shadow-md px-4 py-3 flex justify-between items-center md:hidden no-print">
-                <div class="flex items-center space-x-2">
-                    <span class="bg-rose-600 text-white font-black text-xs px-2 py-0.5 rounded">POS</span>
-                    <h1 class="font-bold text-xs">Kohinoor Fancy</h1>
+                <span class="font-bold text-xs">Kohinoor POS</span>
+                <div class="flex space-x-2">
+                    <button onclick="switchTab('pos')" class="bg-rose-600 text-xs px-2.5 py-1 rounded">POS</button>
+                    <button onclick="switchTab('ledger')" class="bg-slate-800 text-xs px-2.5 py-1 rounded">Ledger</button>
+                    <button onclick="switchTab('trial')" class="bg-slate-800 text-xs px-2.5 py-1 rounded">Trial</button>
                 </div>
-                <button type="button" id="btn-logout-mobile" class="bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs px-3 py-1 rounded-lg font-semibold">Logout</button>
             </header>
 
-            <!-- Mobile Navigation Bar -->
-            <div class="flex bg-white border-b border-slate-200 md:hidden text-xs font-semibold no-print">
-                <button type="button" id="m-tab-pos" class="flex-1 py-3 text-center border-b-2 border-rose-600 text-rose-600 font-bold">POS</button>
-                <button type="button" id="m-tab-ledger" class="flex-1 py-3 text-center text-slate-600">Ledger</button>
-                <button type="button" id="m-tab-trial" class="flex-1 py-3 text-center text-slate-600">Trial Balance</button>
-            </div>
-
             <!-- Workspace Panel -->
-            <main class="p-4 sm:p-6 max-w-5xl mx-auto w-full flex-grow">
+            <main class="p-4 sm:p-8 max-w-5xl mx-auto w-full flex-grow">
                 
                 <!-- 1. TAX INVOICE POS TAB -->
                 <div id="panel-pos" class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -190,15 +198,15 @@
                         <button type="button" id="btn-add-item" class="w-full bg-slate-900 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800 transition shadow-sm">+ Add Line to Invoice</button>
                     </div>
 
-                    <!-- Live Tax Invoice Preview -->
+                    <!-- Live Tax Invoice Preview (Dynamic Store Info) -->
                     <div class="md:col-span-2 bg-amber-50/60 p-5 rounded-2xl shadow-md border-2 border-rose-300 flex flex-col justify-between" id="printable-invoice">
                         <div>
                             <!-- Invoice Header -->
                             <div class="border-b-2 border-rose-300 pb-3 mb-3 text-center">
                                 <h2 class="text-xs font-bold uppercase text-slate-700">PAN / VAT Tax Invoice</h2>
-                                <h1 class="text-xl font-black text-slate-900 tracking-wide mt-0.5">KOHINOOR FANCY AND LADIES STORE</h1>
-                                <p class="text-[11px] text-slate-600">Main Market, Birgunj, Nepal &bull; Mob: +977 9800000000</p>
-                                <p class="text-[10px] text-slate-500 font-semibold mt-0.5">PAN / VAT No: 600000000</p>
+                                <h1 id="invoice-store-title" class="text-xl font-black text-slate-900 tracking-wide mt-0.5">KOHINOOR FANCY AND LADIES STORE</h1>
+                                <p id="invoice-store-address" class="text-[11px] text-slate-600">Birgunj &bull; Nepal</p>
+                                <p class="text-[10px] text-slate-500 font-semibold mt-0.5">PAN / VAT No: <span id="invoice-store-pan">600000000</span></p>
                             </div>
 
                             <!-- Bill Meta Details -->
@@ -258,7 +266,7 @@
                                 </div>
                                 <div class="text-right">
                                     <p class="font-bold text-slate-800">Bank: Nabil Bank | A/C: 010000000000</p>
-                                    <p class="mt-3 font-bold text-slate-900">For Kohinoor Fancy & Ladies Store</p>
+                                    <p id="invoice-footer-store" class="mt-3 font-bold text-slate-900">For KOHINOOR FANCY AND LADIES STORE</p>
                                 </div>
                             </div>
                             <div class="flex space-x-2 no-print">
@@ -312,7 +320,7 @@
 
             <!-- Footer -->
             <footer class="bg-white text-center py-3 text-[11px] text-slate-400 border-t no-print">
-                KOHINOOR FANCY AND LADIES STORE &bull; Pro Cloud POS & Accounting
+                <span id="footer-store-title">KOHINOOR FANCY AND LADIES STORE</span> &bull; Pro Cloud POS & Accounting
             </footer>
         </div>
     </div>
@@ -325,6 +333,11 @@
         let supabaseClient;
         let invoiceItems = [];
         let transactions = [];
+        let currentStoreInfo = {
+            name: "KOHINOOR FANCY AND LADIES STORE",
+            address: "Birgunj",
+            pan: "600000000"
+        };
 
         try {
             if (window.supabase && typeof window.supabase.createClient === 'function') {
@@ -335,6 +348,16 @@
         }
 
         document.getElementById('inv-date').innerText = new Date().toLocaleDateString();
+
+        function updateStoreBrandingUI() {
+            document.getElementById('sidebar-store-name').innerText = currentStoreInfo.name;
+            document.getElementById('sidebar-store-meta').innerText = 'PAN: ' + currentStoreInfo.pan;
+            document.getElementById('invoice-store-title').innerText = currentStoreInfo.name;
+            document.getElementById('invoice-store-address').innerText = currentStoreInfo.address + ' &bull; Nepal';
+            document.getElementById('invoice-store-pan').innerText = currentStoreInfo.pan;
+            document.getElementById('invoice-footer-store').innerText = 'For ' + currentStoreInfo.name;
+            document.getElementById('footer-store-title').innerText = currentStoreInfo.name;
+        }
 
         window.quickSelect = function(name, hsn, size, price, disc, gst) {
             document.getElementById('item-name').value = name;
@@ -358,7 +381,7 @@
             document.getElementById('form-title').innerText = title;
         }
 
-        function switchTab(tabName) {
+        window.switchTab = function(tabName) {
             const isPos = tabName === 'pos';
             const isLedger = tabName === 'ledger';
             const isTrial = tabName === 'trial';
@@ -367,23 +390,9 @@
             document.getElementById('panel-ledger').style.display = isLedger ? 'block' : 'none';
             document.getElementById('panel-trial').style.display = isTrial ? 'block' : 'none';
 
-            // Update Desktop Sidebar styling
-            const navPos = document.getElementById('nav-pos');
-            const navLedger = document.getElementById('nav-ledger');
-            const navTrial = document.getElementById('nav-trial');
-
-            if (navPos) navPos.className = isPos ? 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition bg-rose-600 text-white shadow-sm' : 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300';
-            if (navLedger) navLedger.className = isLedger ? 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition bg-rose-600 text-white shadow-sm' : 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300';
-            if (navTrial) navTrial.className = isTrial ? 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition bg-rose-600 text-white shadow-sm' : 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300';
-
-            // Update Mobile Top Bar styling
-            const mPos = document.getElementById('m-tab-pos');
-            const mLedger = document.getElementById('m-tab-ledger');
-            const mTrial = document.getElementById('m-tab-trial');
-
-            if (mPos) mPos.className = isPos ? 'flex-1 py-3 text-center border-b-2 border-rose-600 text-rose-600 font-bold' : 'flex-1 py-3 text-center text-slate-600';
-            if (mLedger) mLedger.className = isLedger ? 'flex-1 py-3 text-center border-b-2 border-rose-600 text-rose-600 font-bold' : 'flex-1 py-3 text-center text-slate-600';
-            if (mTrial) mTrial.className = isTrial ? 'flex-1 py-3 text-center border-b-2 border-rose-600 text-rose-600 font-bold' : 'flex-1 py-3 text-center text-slate-600';
+            document.getElementById('nav-pos').className = isPos ? 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition bg-rose-600 text-white shadow-sm text-left' : 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left';
+            document.getElementById('nav-ledger').className = isLedger ? 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition bg-rose-600 text-white shadow-sm text-left' : 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left';
+            document.getElementById('nav-trial').className = isTrial ? 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition bg-rose-600 text-white shadow-sm text-left' : 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left';
         }
 
         function updateInvoiceUI() {
@@ -478,7 +487,6 @@
             ledgerList.innerHTML = ledgerHtml;
             journalList.innerHTML = journalHtml;
 
-            // Trial Balance Calculation
             let totalDebit = totalCashReceived;
             let totalCredit = totalSalesRev + totalVAT;
 
@@ -512,14 +520,9 @@
             document.getElementById('link-goto-login1').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Store Portal Login'); });
             document.getElementById('link-goto-login2').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Store Portal Login'); });
 
-            // Sidebar and Mobile Tab Listeners
             document.getElementById('nav-pos').addEventListener('click', () => switchTab('pos'));
             document.getElementById('nav-ledger').addEventListener('click', () => switchTab('ledger'));
             document.getElementById('nav-trial').addEventListener('click', () => switchTab('trial'));
-
-            document.getElementById('m-tab-pos').addEventListener('click', () => switchTab('pos'));
-            document.getElementById('m-tab-ledger').addEventListener('click', () => switchTab('ledger'));
-            document.getElementById('m-tab-trial').addEventListener('click', () => switchTab('trial'));
 
             document.getElementById('btn-login').addEventListener('click', async () => {
                 const email = document.getElementById('login-email').value;
@@ -531,18 +534,38 @@
                 if (error) alert("Login Error: " + error.message);
                 else {
                     document.getElementById('user-email-display-sidebar').innerText = data.user.email;
+                    if (data.user.user_metadata && data.user.user_metadata.store_name) {
+                        currentStoreInfo = {
+                            name: data.user.user_metadata.store_name,
+                            address: data.user.user_metadata.store_address,
+                            pan: data.user.user_metadata.store_pan
+                        };
+                    }
+                    updateStoreBrandingUI();
                     showView('dashboard');
                 }
             });
 
             document.getElementById('btn-signup').addEventListener('click', async () => {
+                const storeName = document.getElementById('store-name').value.trim();
+                const storeAddress = document.getElementById('store-address').value.trim();
+                const storePan = document.getElementById('store-pan').value.trim();
                 const email = document.getElementById('signup-email').value;
                 const password = document.getElementById('signup-password').value;
-                if (!email || !password || password.length < 6) return alert("Enter valid email and password (min 6 chars).");
+
+                if (!storeName || !storeAddress || !storePan || !email || !password || password.length < 6) {
+                    return alert("Please fill in all store details and password (min 6 chars).");
+                }
 
                 if (!supabaseClient) return alert("Supabase client not initialized.");
 
-                const { data, error } = await supabaseClient.auth.signUp({ email, password });
+                const { data, error } = await supabaseClient.auth.signUp({ 
+                    email, 
+                    password,
+                    options: {
+                        data: { store_name: storeName, store_address: storeAddress, store_pan: storePan }
+                    }
+                });
                 
                 if (error) {
                     alert("Sign Up Error: " + error.message);
@@ -550,7 +573,9 @@
                     alert("An account with this email already exists! Please log in instead.");
                     toggleAuthForm('login', 'Store Portal Login');
                 } else {
-                    alert("Account created successfully! You can now log in.");
+                    currentStoreInfo = { name: storeName, address: storeAddress, pan: storePan };
+                    updateStoreBrandingUI();
+                    alert("Store account created successfully! You can now log in.");
                     toggleAuthForm('login', 'Store Portal Login');
                 }
             });
@@ -566,16 +591,13 @@
                 }
             });
 
-            const handleLogout = async () => {
+            document.getElementById('btn-logout').addEventListener('click', async () => {
                 if (supabaseClient) await supabaseClient.auth.signOut();
                 invoiceItems = [];
                 updateInvoiceUI();
                 showView('auth');
                 toggleAuthForm('login', 'Store Portal Login');
-            };
-
-            document.getElementById('btn-logout').addEventListener('click', handleLogout);
-            document.getElementById('btn-logout-mobile').addEventListener('click', handleLogout);
+            });
 
             document.getElementById('btn-add-item').addEventListener('click', () => {
                 const name = document.getElementById('item-name').value.trim();
