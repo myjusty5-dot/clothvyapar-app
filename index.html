@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KOHINOOR FANCY AND LADIES STORE - POS & Accounting</title>
+    <title>KOHINOOR FANCY AND LADIES STORE - Tax Invoice & Auto Accounting</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #printable-invoice, #printable-invoice * { visibility: visible; }
+            #printable-invoice { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none !important; }
+        }
+    </style>
 </head>
 <body class="bg-slate-100 min-h-screen flex flex-col justify-between font-sans">
 
@@ -13,26 +21,26 @@
     <div id="auth-container" class="flex items-center justify-center min-h-screen p-4">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-200">
             <div class="text-center mb-6">
-                <span class="bg-pink-100 text-pink-700 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full">Retail POS Suite</span>
-                <h1 class="text-2xl font-black text-slate-900 tracking-tight mt-2">KOHINOOR FANCY</h1>
+                <span class="bg-amber-100 text-amber-800 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full">Automated POS & Accounting</span>
+                <h1 class="text-xl font-black text-slate-900 tracking-tight mt-2">KOHINOOR FANCY</h1>
                 <p class="text-xs text-slate-500 font-medium">AND LADIES STORE</p>
             </div>
             
-            <h2 id="form-title" class="text-lg font-bold mb-4 text-slate-800 text-center">Login to Store Portal</h2>
+            <h2 id="form-title" class="text-lg font-bold mb-4 text-slate-800 text-center">Login to Portal</h2>
 
             <!-- Login Form -->
             <div id="login-section">
                 <div class="mb-4">
                     <label class="block text-slate-700 text-xs font-bold uppercase mb-1">Email Address</label>
-                    <input type="email" id="login-email" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="store@example.com" required />
+                    <input type="email" id="login-email" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="store@example.com" required />
                 </div>
                 <div class="mb-5">
                     <label class="block text-slate-700 text-xs font-bold uppercase mb-1">Password</label>
-                    <input type="password" id="login-password" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="••••••••" required />
+                    <input type="password" id="login-password" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="••••••••" required />
                 </div>
-                <button type="button" id="btn-login" class="w-full bg-pink-600 text-white py-3 rounded-xl hover:bg-pink-700 transition font-bold shadow-lg shadow-pink-500/20 text-sm mb-4">Secure Login</button>
+                <button type="button" id="btn-login" class="w-full bg-slate-900 text-white py-3 rounded-xl hover:bg-slate-800 transition font-bold shadow-lg text-sm mb-4">Secure Login</button>
                 <div class="flex justify-between text-xs font-medium">
-                    <a href="#" id="link-goto-signup" class="text-pink-600 hover:underline">Create Store Account</a>
+                    <a href="#" id="link-goto-signup" class="text-amber-600 hover:underline">Create Store Account</a>
                     <a href="#" id="link-goto-forgot" class="text-slate-500 hover:underline">Forgot Password?</a>
                 </div>
             </div>
@@ -41,37 +49,37 @@
             <div id="signup-section" style="display: none;" class="mt-2">
                 <div class="mb-4">
                     <label class="block text-slate-700 text-xs font-bold uppercase mb-1">Email Address</label>
-                    <input type="email" id="signup-email" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="store@example.com" required />
+                    <input type="email" id="signup-email" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="store@example.com" required />
                 </div>
                 <div class="mb-5">
                     <label class="block text-slate-700 text-xs font-bold uppercase mb-1">Password (Min 6 Chars)</label>
-                    <input type="password" id="signup-password" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="••••••••" required />
+                    <input type="password" id="signup-password" class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="••••••••" required />
                 </div>
-                <button type="button" id="btn-signup" class="w-full bg-slate-900 text-white py-3 rounded-xl hover:bg-slate-800 transition font-bold shadow-lg text-sm mb-4">Register Account</button>
+                <button type="button" id="btn-signup" class="w-full bg-amber-600 text-white py-3 rounded-xl hover:bg-amber-700 transition font-bold shadow-lg text-sm mb-4">Register Account</button>
                 <div class="text-center">
-                    <a href="#" id="link-goto-login1" class="text-xs text-pink-600 font-medium hover:underline">← Back to Login</a>
+                    <a href="#" id="link-goto-login1" class="text-xs text-amber-600 font-medium hover:underline">← Back to Login</a>
                 </div>
             </div>
 
             <!-- Forgot Password Modal -->
             <div id="forgot-password-modal" style="display: none;" class="mt-2">
                 <p class="text-xs text-slate-500 mb-4">Enter your registered email to receive a password recovery link.</p>
-                <input type="email" id="reset-email" class="w-full px-3.5 py-2.5 border rounded-xl text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="store@example.com" />
-                <button type="button" id="btn-reset" class="w-full bg-pink-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-pink-700 mb-4 shadow-md">Send Recovery Link</button>
+                <input type="email" id="reset-email" class="w-full px-3.5 py-2.5 border rounded-xl text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="store@example.com" />
+                <button type="button" id="btn-reset" class="w-full bg-amber-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-amber-700 mb-4 shadow-md">Send Recovery Link</button>
                 <div class="text-center">
-                    <a href="#" id="link-goto-login2" class="text-xs text-pink-600 font-medium hover:underline">← Back to Login</a>
+                    <a href="#" id="link-goto-login2" class="text-xs text-amber-600 font-medium hover:underline">← Back to Login</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- DASHBOARD CONTAINER (POS, LEDGER & BALANCE SHEET) -->
+    <!-- DASHBOARD CONTAINER -->
     <div id="dashboard-container" style="display: none;" class="flex flex-col min-h-screen justify-between w-full">
         <!-- Top Navigation Bar -->
-        <header class="bg-slate-900 text-white shadow-md px-4 py-3 flex justify-between items-center sticky top-0 z-50">
+        <header class="bg-slate-900 text-white shadow-md px-4 py-3 flex justify-between items-center sticky top-0 z-50 no-print">
             <div class="flex items-center space-x-2">
-                <span class="bg-pink-600 font-black text-xs px-2.5 py-1 rounded-lg">KOHINOOR</span>
-                <h1 class="font-bold text-xs tracking-wide truncate max-w-[200px] sm:max-w-none">Fancy & Ladies Store</h1>
+                <span class="bg-amber-500 text-slate-950 font-black text-xs px-2.5 py-1 rounded-lg">POS & ACCOUNTS</span>
+                <h1 class="font-bold text-xs tracking-wide truncate max-w-[180px] sm:max-w-none">Kohinoor Fancy & Ladies Store</h1>
             </div>
             <div class="flex items-center space-x-2">
                 <span id="user-email-display" class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg hidden sm:inline-block truncate max-w-[150px]"></span>
@@ -82,119 +90,203 @@
         <!-- Main Workspace -->
         <main class="p-4 max-w-5xl mx-auto w-full flex-grow">
             <!-- Navigation Tabs -->
-            <div class="flex bg-white rounded-2xl p-1.5 shadow-sm border border-slate-200 mb-4 text-xs font-semibold">
-                <button type="button" id="tab-pos" class="flex-1 py-2.5 text-center rounded-xl transition bg-pink-600 text-white shadow-sm">⚡ POS Billing</button>
-                <button type="button" id="tab-ledger" class="flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-pink-600">📖 Sales Ledger</button>
-                <button type="button" id="tab-balance" class="flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-pink-600">📊 Balance Sheet</button>
+            <div class="flex bg-white rounded-2xl p-1.5 shadow-sm border border-slate-200 mb-4 text-xs font-semibold no-print">
+                <button type="button" id="tab-pos" class="flex-1 py-2.5 text-center rounded-xl transition bg-amber-500 text-slate-950 font-bold shadow-sm">📄 Tax Invoice POS</button>
+                <button type="button" id="tab-ledger" class="flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-amber-600">📖 Sales & Journal Ledger</button>
+                <button type="button" id="tab-trial" class="flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-amber-600">📊 Trial Balance</button>
             </div>
 
-            <!-- 1. POS TAB PANEL -->
+            <!-- 1. TAX INVOICE POS TAB -->
             <div id="panel-pos" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Add Product / Quick Select -->
-                <div class="md:col-span-1 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 h-fit space-y-3">
+                <!-- Add Item Form -->
+                <div class="md:col-span-1 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 h-fit space-y-3 no-print">
                     <h3 class="font-bold text-slate-800 text-sm flex items-center justify-between">
-                        <span>Add Item</span>
-                        <span class="text-[10px] bg-pink-50 text-pink-600 px-2 py-0.5 rounded-full font-semibold">Billing Desk</span>
+                        <span>Invoice Line Item</span>
+                        <span class="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-semibold">Auto-Calculated</span>
                     </h3>
 
-                    <!-- Quick Preset Buttons for Ladies Items -->
+                    <!-- Quick Presets -->
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Quick Select Category</label>
                         <div class="flex flex-wrap gap-1">
-                            <button type="button" onclick="quickSelect('Saree', 1200)" class="text-[10px] bg-slate-100 hover:bg-pink-50 hover:text-pink-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Saree</button>
-                            <button type="button" onclick="quickSelect('Kurti', 650)" class="text-[10px] bg-slate-100 hover:bg-pink-50 hover:text-pink-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Kurti</button>
-                            <button type="button" onclick="quickSelect('Suit Set', 1800)" class="text-[10px] bg-slate-100 hover:bg-pink-50 hover:text-pink-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Suit Set</button>
-                            <button type="button" onclick="quickSelect('Lehenga', 3500)" class="text-[10px] bg-slate-100 hover:bg-pink-50 hover:text-pink-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Lehenga</button>
-                            <button type="button" onclick="quickSelect('Cosmetics', 300)" class="text-[10px] bg-slate-100 hover:bg-pink-50 hover:text-pink-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Cosmetics</button>
+                            <button type="button" onclick="quickSelect('Men\'s T-Shirt Cotton', '6109', 'M', 400, 20, 5)" class="text-[10px] bg-slate-100 hover:bg-amber-50 hover:text-amber-800 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">T-Shirt</button>
+                            <button type="button" onclick="quickSelect('Women\'s Kurti', '6204', 'L', 750, 50, 5)" class="text-[10px] bg-slate-100 hover:bg-amber-50 hover:text-amber-800 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Kurti</button>
+                            <button type="button" onclick="quickSelect('Kids Shorts', '6209', '6Y', 200, 0, 5)" class="text-[10px] bg-slate-100 hover:bg-amber-50 hover:text-amber-800 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Shorts</button>
+                            <button type="button" onclick="quickSelect('Designer Saree', '5407', 'Free', 1500, 100, 5)" class="text-[10px] bg-slate-100 hover:bg-amber-50 hover:text-amber-800 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Saree</button>
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Item Description</label>
-                        <input type="text" id="item-name" placeholder="e.g. Designer Georgette Saree" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-pink-500 focus:outline-none" />
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Item Name</label>
+                        <input type="text" id="item-name" placeholder="e.g. Women's Kurti" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none" />
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Price (₹)</label>
-                            <input type="number" id="item-price" placeholder="0.00" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-pink-500 focus:outline-none" />
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">HSN Code</label>
+                            <input type="text" id="item-hsn" placeholder="6204" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none" />
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Quantity</label>
-                            <input type="number" id="item-qty" value="1" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-pink-500 focus:outline-none" />
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Size</label>
+                            <input type="text" id="item-size" placeholder="L / M / Free" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none" />
                         </div>
                     </div>
-                    <button type="button" id="btn-add-cart" class="w-full bg-slate-900 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800 transition shadow-sm">+ Add to Cart</button>
-                </div>
-
-                <!-- Active Cart & Checkout -->
-                <div class="md:col-span-2 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Qty</label>
+                            <input type="number" id="item-qty" value="1" class="w-full px-2 py-2 border rounded-xl text-xs text-center" />
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Price (₹)</label>
+                            <input type="number" id="item-price" placeholder="750" class="w-full px-2 py-2 border rounded-xl text-xs text-center" />
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Disc (₹)</label>
+                            <input type="number" id="item-disc" value="0" class="w-full px-2 py-2 border rounded-xl text-xs text-center" />
+                        </div>
+                    </div>
                     <div>
-                        <div class="flex justify-between items-center mb-3 border-b pb-2">
-                            <h3 class="font-bold text-slate-800 text-sm">Active Billing Cart</h3>
-                            <span id="cart-item-count" class="text-xs text-slate-400 font-medium">0 items</span>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">GST %</label>
+                        <input type="number" id="item-gst" value="5" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+                    </div>
+                    <button type="button" id="btn-add-item" class="w-full bg-slate-900 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800 transition shadow-sm">+ Add Line to Invoice</button>
+                </div>
+
+                <!-- Live Tax Invoice Preview (Yellow Theme matching reference) -->
+                <div class="md:col-span-2 bg-yellow-50 p-4 rounded-2xl shadow-md border-2 border-amber-400 flex flex-col justify-between" id="printable-invoice">
+                    <div>
+                        <!-- Invoice Header -->
+                        <div class="border-b-2 border-amber-400 pb-3 mb-3 text-center">
+                            <h2 class="text-xs font-bold uppercase text-slate-700">Tax Invoice / Cash Memo</h2>
+                            <h1 class="text-xl font-black text-slate-900 tracking-wide mt-0.5">KOHINOOR FANCY AND LADIES STORE</h1>
+                            <p class="text-[11px] text-slate-600">Main Market Road, Uttar Pradesh, India &bull; Mob: +91 8282828281</p>
+                            <p class="text-[10px] text-slate-500 font-semibold mt-0.5">GSTIN: 09AAACH7409R1ZZ | PAN: BEUPK7566Y</p>
                         </div>
-                        <div id="cart-list" class="divide-y max-h-60 overflow-y-auto mb-4 text-xs pr-1">
-                            <div class="text-center py-8 text-slate-400 font-medium">Cart is currently empty. Add items to bill.</div>
+
+                        <!-- Bill Meta Details -->
+                        <div class="grid grid-cols-2 text-[11px] border-b border-amber-300 pb-2 mb-3 text-slate-700">
+                            <div>
+                                <p><strong class="text-slate-900">Billing Details:</strong> Cash / Walk-in Customer</p>
+                                <p>Uttar Pradesh, India</p>
+                            </div>
+                            <div class="text-right">
+                                <p><strong class="text-slate-900">Invoice No:</strong> <span id="inv-no">0001/25-26</span></p>
+                                <p><strong class="text-slate-900">Invoice Date:</strong> <span id="inv-date">--</span></p>
+                                <p><strong class="text-slate-900">Place of Supply:</strong> 09-Uttar Pradesh</p>
+                            </div>
+                        </div>
+
+                        <!-- Items Table -->
+                        <div class="overflow-x-auto min-h-[160px]">
+                            <table class="w-full text-left text-[11px] border-collapse">
+                                <thead>
+                                    <tr class="border-b border-amber-400 text-slate-800">
+                                        <th class="py-1 px-1">S.No.</th>
+                                        <th class="py-1 px-1">Item Description</th>
+                                        <th class="py-1 px-1">HSN</th>
+                                        <th class="py-1 px-1">Qty</th>
+                                        <th class="py-1 px-1">Size</th>
+                                        <th class="py-1 px-1">Price</th>
+                                        <th class="py-1 px-1">Disc</th>
+                                        <th class="py-1 px-1">GST</th>
+                                        <th class="py-1 px-1 text-right">Total (₹)</th>
+                                        <th class="no-print"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invoice-items-list" class="divide-y divide-amber-200">
+                                    <tr>
+                                        <td colspan="10" class="text-center py-6 text-slate-400 italic">No invoice items added yet. Use form on left.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <div class="border-t pt-3">
-                        <div class="flex justify-between items-center text-base font-black text-slate-900 mb-3">
-                            <span>Grand Total:</span>
-                            <span id="cart-total" class="text-pink-600 text-xl">₹0.00</span>
+
+                    <!-- Totals & Footer -->
+                    <div class="border-t-2 border-amber-400 pt-3 mt-4">
+                        <div class="flex justify-between items-center text-sm font-black text-slate-900 mb-2">
+                            <span>Total Payable Amount:</span>
+                            <span id="invoice-grand-total" class="text-amber-700 text-lg">₹0.00</span>
                         </div>
-                        <button type="button" id="btn-checkout" class="w-full bg-pink-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-pink-700 transition shadow-lg shadow-pink-500/20">Complete Sale & Print Bill</button>
+                        <div class="bg-amber-100/60 p-2 rounded-lg text-[10px] text-slate-700 mb-3 space-y-0.5">
+                            <p id="amount-in-words" class="font-bold italic">Zero Rupees Only</p>
+                            <p id="tax-breakdown-text">Tax Summary: Sale @5% = ₹0.00 | CGST = ₹0.00 | SGST = ₹0.00</p>
+                        </div>
+                        <div class="grid grid-cols-2 text-[10px] text-slate-600 border-t border-amber-300 pt-2 mb-3">
+                            <div>
+                                <p class="font-bold text-slate-800">Terms & Conditions:</p>
+                                <p>1. Goods once sold will not be taken back.</p>
+                                <p>2. Subject to local jurisdiction.</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold text-slate-800">Bank: ICICI | A/C: 234000991111899</p>
+                                <p>IFSC: ICICI560000078</p>
+                                <p class="mt-4 font-bold text-slate-900">For Kohinoor Fancy & Ladies Store</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2 no-print">
+                            <button type="button" onclick="window.print()" class="flex-1 bg-slate-800 text-white py-2 rounded-xl text-xs font-bold hover:bg-slate-900 transition shadow">🖨️ Print Tax Invoice</button>
+                            <button type="button" id="btn-complete-sale" class="flex-1 bg-amber-600 text-white py-2 rounded-xl text-xs font-bold hover:bg-amber-700 transition shadow">💾 Post to Ledger & Accounts</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. LEDGER TAB PANEL -->
-            <div id="panel-ledger" style="display: none;" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-slate-800 text-sm">Sales Transaction Ledger</h3>
-                    <span class="text-xs text-slate-500 font-medium">Real-time log</span>
+            <!-- 2. LEDGER & JOURNAL TAB -->
+            <div id="panel-ledger" style="display: none;" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-sm mb-3">📖 Sales Transaction Ledger</h3>
+                    <div id="ledger-list" class="divide-y text-xs max-h-56 overflow-y-auto border rounded-xl p-3 bg-slate-50">
+                        <div class="text-center py-6 text-slate-400">No transactions posted yet.</div>
+                    </div>
                 </div>
-                <div id="ledger-list" class="divide-y text-xs max-h-[420px] overflow-y-auto">
-                    <div class="text-center py-12 text-slate-400 font-medium">No sales recorded yet today.</div>
+                <div>
+                    <h3 class="font-bold text-slate-800 text-sm mb-3">📝 Automated Double-Entry Journal Entries</h3>
+                    <div id="journal-list" class="divide-y text-xs max-h-56 overflow-y-auto border rounded-xl p-3 bg-slate-50 font-mono">
+                        <div class="text-center py-6 text-slate-400 font-sans">No journal entries generated yet.</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- 3. BALANCE SHEET TAB PANEL -->
-            <div id="panel-balance" style="display: none;" class="space-y-4">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                        <p class="text-xs font-bold text-slate-400 uppercase">Total Revenue</p>
-                        <p id="bs-total-revenue" class="text-2xl font-black text-emerald-600 mt-1">₹0.00</p>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                        <p class="text-xs font-bold text-slate-400 uppercase">Transactions Count</p>
-                        <p id="bs-total-tx" class="text-2xl font-black text-pink-600 mt-1">0</p>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                        <p class="text-xs font-bold text-slate-400 uppercase">Net Cash Flow</p>
-                        <p id="bs-net-cash" class="text-2xl font-black text-slate-800 mt-1">₹0.00</p>
-                    </div>
+            <!-- 3. TRIAL BALANCE TAB -->
+            <div id="panel-trial" style="display: none;" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 class="font-bold text-slate-800 text-sm">📊 Automated Trial Balance Summary</h3>
+                    <span class="text-xs bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-bold">Balanced Accounts</span>
                 </div>
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center py-12">
-                    <h4 class="font-bold text-slate-700 text-sm">Kohinoor Fancy Store Financial Health</h4>
-                    <p class="text-xs text-slate-400 mt-1">All calculations sync directly with your recorded session ledger.</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 uppercase text-[10px]">
+                                <th class="p-2.5 border">Account Head</th>
+                                <th class="p-2.5 border text-right">Debit (₹)</th>
+                                <th class="p-2.5 border text-right">Credit (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trial-balance-body" class="divide-y">
+                            <tr>
+                                <td class="p-2.5 border text-slate-400" colspan="3">No financial data to compute trial balance yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </main>
 
         <!-- Footer -->
-        <footer class="bg-white text-center py-3 text-[11px] text-slate-400 border-t">
-            KOHINOOR FANCY AND LADIES STORE &bull; Cloud POS Edition
+        <footer class="bg-white text-center py-3 text-[11px] text-slate-400 border-t no-print">
+            KOHINOOR FANCY AND LADIES STORE &bull; Automated Accounting Edition
         </footer>
     </div>
 
-    <!-- JAVASCRIPT APP LOGIC -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
         const SUPABASE_URL = 'https://ylmzbyhyguwiipugdxjc.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_uj8pIAiX8r1yvxPzJrBW_w_0RFSFhMz';
 
         let supabaseClient;
-        let cart = [];
+        let invoiceItems = [];
         let transactions = [];
+        let journalEntries = [];
 
         try {
             if (window.supabase && typeof window.supabase.createClient === 'function') {
@@ -204,9 +296,15 @@
             alert("Initialization Error: " + err.message);
         }
 
-        window.quickSelect = function(name, price) {
+        document.getElementById('inv-date').innerText = new Date().toLocaleDateString();
+
+        window.quickSelect = function(name, hsn, size, price, disc, gst) {
             document.getElementById('item-name').value = name;
+            document.getElementById('item-hsn').value = hsn;
+            document.getElementById('item-size').value = size;
             document.getElementById('item-price').value = price;
+            document.getElementById('item-disc').value = disc;
+            document.getElementById('item-gst').value = gst;
             document.getElementById('item-qty').value = 1;
         }
 
@@ -225,92 +323,156 @@
         function switchTab(tabName) {
             const isPos = tabName === 'pos';
             const isLedger = tabName === 'ledger';
-            const isBalance = tabName === 'balance';
+            const isTrial = tabName === 'trial';
 
             document.getElementById('panel-pos').style.display = isPos ? 'grid' : 'none';
             document.getElementById('panel-ledger').style.display = isLedger ? 'block' : 'none';
-            document.getElementById('panel-balance').style.display = isBalance ? 'block' : 'none';
+            document.getElementById('panel-trial').style.display = isTrial ? 'block' : 'none';
 
-            document.getElementById('tab-pos').className = isPos ? 'flex-1 py-2.5 text-center rounded-xl transition bg-pink-600 text-white shadow-sm' : 'flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-pink-600';
-            document.getElementById('tab-ledger').className = isLedger ? 'flex-1 py-2.5 text-center rounded-xl transition bg-pink-600 text-white shadow-sm' : 'flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-pink-600';
-            document.getElementById('tab-balance').className = isBalance ? 'flex-1 py-2.5 text-center rounded-xl transition bg-pink-600 text-white shadow-sm' : 'flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-pink-600';
+            document.getElementById('tab-pos').className = isPos ? 'flex-1 py-2.5 text-center rounded-xl transition bg-amber-500 text-slate-950 font-bold shadow-sm' : 'flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-amber-600';
+            document.getElementById('tab-ledger').className = isLedger ? 'flex-1 py-2.5 text-center rounded-xl transition bg-amber-500 text-slate-950 font-bold shadow-sm' : 'flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-amber-600';
+            document.getElementById('tab-trial').className = isTrial ? 'flex-1 py-2.5 text-center rounded-xl transition bg-amber-500 text-slate-950 font-bold shadow-sm' : 'flex-1 py-2.5 text-center rounded-xl transition text-slate-600 hover:text-amber-600';
         }
 
-        function updateCartUI() {
-            const list = document.getElementById('cart-list');
-            const totalEl = document.getElementById('cart-total');
-            const countEl = document.getElementById('cart-item-count');
-            
-            countEl.innerText = cart.reduce((acc, item) => acc + item.qty, 0) + ' items';
+        function updateInvoiceUI() {
+            const list = document.getElementById('invoice-items-list');
+            const totalEl = document.getElementById('invoice-grand-total');
+            const wordsEl = document.getElementById('amount-in-words');
+            const taxTextEl = document.getElementById('tax-breakdown-text');
 
-            if (cart.length === 0) {
-                list.innerHTML = '<div class="text-center py-8 text-slate-400 font-medium">Cart is currently empty. Add items to bill.</div>';
+            if (invoiceItems.length === 0) {
+                list.innerHTML = '<tr><td colspan="10" class="text-center py-6 text-slate-400 italic">No invoice items added yet. Use form on left.</td></tr>';
                 totalEl.innerText = '₹0.00';
+                wordsEl.innerText = 'Zero Rupees Only';
+                taxTextEl.innerText = 'Tax Summary: Sale @5% = ₹0.00 | CGST = ₹0.00 | SGST = ₹0.00';
                 return;
             }
+
             let html = '';
-            let total = 0;
-            cart.forEach((item, index) => {
-                const subtotal = item.price * item.qty;
-                total += subtotal;
-                html += `<div class="py-2.5 flex justify-between items-center">
-                    <div>
-                        <p class="font-bold text-slate-800">${item.name}</p>
-                        <p class="text-[11px] text-slate-400">${item.qty} units × ₹${item.price}</p>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <span class="font-bold text-slate-900">₹${subtotal.toFixed(2)}</span>
-                        <button onclick="removeFromCart(${index})" class="text-rose-500 text-xs font-bold px-1.5 py-0.5 rounded hover:bg-rose-50">✕</button>
-                    </div>
-                </div>`;
+            let grandTotal = 0;
+            let totalTaxable = 0;
+            let totalTax = 0;
+
+            invoiceItems.forEach((item, index) => {
+                const baseAmount = (item.price * item.qty) - item.disc;
+                const taxAmount = (baseAmount * item.gst) / 100;
+                const totalAmount = baseAmount + taxAmount;
+
+                grandTotal += totalAmount;
+                totalTaxable += baseAmount;
+                totalTax += taxAmount;
+
+                html += `<tr class="border-b border-amber-200">
+                    <td class="py-1 px-1">${index + 1}</td>
+                    <td class="py-1 px-1 font-semibold">${item.name}</td>
+                    <td class="py-1 px-1">${item.hsn}</td>
+                    <td class="py-1 px-1">${item.qty}</td>
+                    <td class="py-1 px-1">${item.size}</td>
+                    <td class="py-1 px-1">₹${item.price.toFixed(2)}</td>
+                    <td class="py-1 px-1">₹${item.disc.toFixed(2)}</td>
+                    <td class="py-1 px-1">${item.gst}%</td>
+                    <td class="py-1 px-1 text-right font-bold">₹${totalAmount.toFixed(2)}</td>
+                    <td class="no-print text-right"><button onclick="removeItem(${index})" class="text-rose-600 font-bold px-1">✕</button></td>
+                </tr>`;
             });
+
             list.innerHTML = html;
-            totalEl.innerText = '₹' + total.toFixed(2);
+            totalEl.innerText = '₹' + grandTotal.toFixed(2);
+            wordsEl.innerText = 'Total Amount: ₹' + grandTotal.toFixed(2);
+            let halfTax = (totalTax / 2).toFixed(2);
+            taxTextEl.innerText = `Tax Summary: Taxable = ₹${totalTaxable.toFixed(2)} | CGST (2.5%) = ₹${halfTax} | SGST (2.5%) = ₹${halfTax} | Total Tax = ₹${totalTax.toFixed(2)}`;
         }
 
-        window.removeFromCart = function(index) {
-            cart.splice(index, 1);
-            updateCartUI();
+        window.removeItem = function(index) {
+            invoiceItems.splice(index, 1);
+            updateInvoiceUI();
         }
 
-        function updateLedgerAndBalanceUI() {
+        function updateAccountingLedgersAndTrialBalance() {
             const ledgerList = document.getElementById('ledger-list');
-            const revEl = document.getElementById('bs-total-revenue');
-            const txEl = document.getElementById('bs-total-tx');
-            const netEl = document.getElementById('bs-net-cash');
-
-            let totalRev = transactions.reduce((sum, tx) => sum + tx.total, 0);
-            revEl.innerText = '₹' + totalRev.toFixed(2);
-            txEl.innerText = transactions.length;
-            netEl.innerText = '₹' + totalRev.toFixed(2);
+            const journalList = document.getElementById('journal-list');
+            const trialBody = document.getElementById('trial-balance-body');
 
             if (transactions.length === 0) {
-                ledgerList.innerHTML = '<div class="text-center py-12 text-slate-400 font-medium">No sales recorded yet today.</div>';
+                ledgerList.innerHTML = '<div class="text-center py-6 text-slate-400">No transactions posted yet.</div>';
+                journalList.innerHTML = '<div class="text-center py-6 text-slate-400 font-sans">No journal entries generated yet.</div>';
+                trialBody.innerHTML = '<tr><td class="p-2.5 border text-slate-400" colspan="3">No financial data to compute trial balance yet.</td></tr>';
                 return;
             }
 
-            let html = '';
-            transactions.forEach((tx) => {
-                html += `<div class="py-3 flex justify-between items-center">
-                    <div>
-                        <p class="font-bold text-slate-800">Order #${tx.id} <span class="text-slate-400 font-normal">(${tx.itemsCount} items)</span></p>
-                        <p class="text-[11px] text-slate-400">${tx.date}</p>
-                    </div>
-                    <span class="font-extrabold text-emerald-600 text-sm">₹${tx.total.toFixed(2)}</span>
+            let ledgerHtml = '';
+            let journalHtml = '';
+            let totalSalesRev = 0;
+            let totalCGST = 0;
+            let totalSGST = 0;
+            let totalCashReceived = 0;
+
+            transactions.forEach(tx => {
+                ledgerHtml += `<div class="py-2 flex justify-between items-center border-b">
+                    <div><strong>Invoice #${tx.invNo}</strong> <span class="text-slate-400">(${tx.itemsCount} items)</span></div>
+                    <span class="font-bold text-emerald-600">₹${tx.total.toFixed(2)}</span>
+                </div>`;
+
+                let halfGst = tx.tax / 2;
+                totalSalesRev += tx.subtotal;
+                totalCGST += halfGst;
+                totalSGST += halfGst;
+                totalCashReceived += tx.total;
+
+                journalHtml += `<div class="p-2 mb-2 bg-white rounded border shadow-sm">
+                    <p class="text-[10px] text-slate-400 font-sans">${tx.date} - Ref: Inv #${tx.invNo}</p>
+                    <p class="text-blue-700 font-bold">Dr. Cash / Bank A/c ................................ ₹${tx.total.toFixed(2)}</p>
+                    <p class="pl-4 text-slate-700">Cr. Sales Revenue A/c .......................... ₹${tx.subtotal.toFixed(2)}</p>
+                    <p class="pl-4 text-slate-700">Cr. Output CGST A/c .......................... ₹${halfGst.toFixed(2)}</p>
+                    <p class="pl-4 text-slate-700">Cr. Output SGST A/c .......................... ₹${halfGst.toFixed(2)}</p>
                 </div>`;
             });
-            ledgerList.innerHTML = html;
+
+            ledgerList.innerHTML = ledgerHtml;
+            journalList.innerHTML = journalHtml;
+
+            // Trial Balance Calculation
+            let totalDebit = totalCashReceived;
+            let totalCredit = totalSalesRev + totalCGST + totalSGST;
+
+            trialBody.innerHTML = `
+                <tr>
+                    <td class="p-2.5 border font-semibold">Cash in Hand / Bank A/c (Asset)</td>
+                    <td class="p-2.5 border text-right font-bold text-slate-800">₹${totalCashReceived.toFixed(2)}</td>
+                    <td class="p-2.5 border text-right">-</td>
+                </tr>
+                <tr>
+                    <td class="p-2.5 border font-semibold">Sales Revenue A/c (Income)</td>
+                    <td class="p-2.5 border text-right">-</td>
+                    <td class="p-2.5 border text-right font-bold text-slate-800">₹${totalSalesRev.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td class="p-2.5 border font-semibold">Output CGST Payable (Liability)</td>
+                    <td class="p-2.5 border text-right">-</td>
+                    <td class="p-2.5 border text-right font-bold text-slate-800">₹${totalCGST.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td class="p-2.5 border font-semibold">Output SGST Payable (Liability)</td>
+                    <td class="p-2.5 border text-right">-</td>
+                    <td class="p-2.5 border text-right font-bold text-slate-800">₹${totalSGST.toFixed(2)}</td>
+                </tr>
+                <tr class="bg-slate-50 font-black">
+                    <td class="p-2.5 border">TOTAL TRIAL BALANCE</td>
+                    <td class="p-2.5 border text-right text-emerald-600">₹${totalDebit.toFixed(2)}</td>
+                    <td class="p-2.5 border text-right text-emerald-600">₹${totalCredit.toFixed(2)}</td>
+                </tr>
+            `;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('link-goto-signup').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('signup', 'Create Store Account'); });
             document.getElementById('link-goto-forgot').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('forgot', 'Recover Password'); });
-            document.getElementById('link-goto-login1').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Login to Store Portal'); });
-            document.getElementById('link-goto-login2').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Login to Store Portal'); });
+            document.getElementById('link-goto-login1').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Login to Portal'); });
+            document.getElementById('link-goto-login2').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Login to Portal'); });
 
             document.getElementById('tab-pos').addEventListener('click', () => switchTab('pos'));
             document.getElementById('tab-ledger').addEventListener('click', () => switchTab('ledger'));
-            document.getElementById('tab-balance').addEventListener('click', () => switchTab('balance'));
+            document.getElementById('tab-trial').addEventListener('click', () => switchTab('trial'));
 
             document.getElementById('btn-login').addEventListener('click', async () => {
                 const email = document.getElementById('login-email').value;
@@ -335,8 +497,8 @@
                 const { error } = await supabaseClient.auth.signUp({ email, password });
                 if (error) alert("Sign Up Error: " + error.message);
                 else {
-                    alert("Store account created successfully! You can now log in.");
-                    toggleAuthForm('login', 'Login to Store Portal');
+                    alert("Account created successfully! You can now log in.");
+                    toggleAuthForm('login', 'Login to Portal');
                 }
             });
 
@@ -347,51 +509,70 @@
                 if (error) alert("Error: " + error.message);
                 else {
                     alert("Password recovery email sent!");
-                    toggleAuthForm('login', 'Login to Store Portal');
+                    toggleAuthForm('login', 'Login to Portal');
                 }
             });
 
             document.getElementById('btn-logout').addEventListener('click', async () => {
                 if (supabaseClient) await supabaseClient.auth.signOut();
-                cart = [];
-                updateCartUI();
+                invoiceItems = [];
+                updateInvoiceUI();
                 showView('auth');
-                toggleAuthForm('login', 'Login to Store Portal');
+                toggleAuthForm('login', 'Login to Portal');
             });
 
-            document.getElementById('btn-add-cart').addEventListener('click', () => {
+            document.getElementById('btn-add-item').addEventListener('click', () => {
                 const name = document.getElementById('item-name').value.trim();
-                const price = parseFloat(document.getElementById('item-price').value);
-                const qty = parseInt(document.getElementById('item-qty').value);
+                const hsn = document.getElementById('item-hsn').value.trim() || '6204';
+                const size = document.getElementById('item-size').value.trim() || 'Free';
+                const qty = parseInt(document.getElementById('item-qty').value) || 1;
+                const price = parseFloat(document.getElementById('item-price').value) || 0;
+                const disc = parseFloat(document.getElementById('item-disc').value) || 0;
+                const gst = parseFloat(document.getElementById('item-gst').value) || 5;
 
-                if (!name || isNaN(price) || price <= 0 || isNaN(qty) || qty <= 0) {
-                    alert("Please enter valid item name and price.");
+                if (!name || price <= 0) {
+                    alert("Please enter a valid item name and price.");
                     return;
                 }
 
-                cart.push({ name, price, qty });
+                invoiceItems.push({ name, hsn, size, qty, price, disc, gst });
                 document.getElementById('item-name').value = '';
                 document.getElementById('item-price').value = '';
-                document.getElementById('item-qty').value = '1';
-                updateCartUI();
+                document.getElementById('item-disc').value = '0';
+                updateInvoiceUI();
             });
 
-            document.getElementById('btn-checkout').addEventListener('click', () => {
-                if (cart.length === 0) return alert("Cart is empty!");
-                let total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-                let itemsCount = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('btn-complete-sale').addEventListener('click', () => {
+                if (invoiceItems.length === 0) return alert("Invoice is empty!");
+
+                let subtotal = 0;
+                let totalTax = 0;
+                let itemsCount = 0;
+
+                invoiceItems.forEach(item => {
+                    let base = (item.price * item.qty) - item.disc;
+                    let tax = (base * item.gst) / 100;
+                    subtotal += base;
+                    totalTax += tax;
+                    itemsCount += item.qty;
+                });
+
+                let grandTotal = subtotal + totalTax;
+                let invNo = '00' + Math.floor(100 + Math.random() * 900) + '/25-26';
 
                 transactions.unshift({
-                    id: Math.floor(1000 + Math.random() * 9000),
+                    invNo,
                     itemsCount,
-                    total,
+                    subtotal,
+                    tax: totalTax,
+                    total: grandTotal,
                     date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' + new Date().toLocaleDateString()
                 });
 
-                cart = [];
-                updateCartUI();
-                updateLedgerAndBalanceUI();
-                alert("Sale successfully completed & recorded!");
+                invoiceItems = [];
+                updateInvoiceUI();
+                updateAccountingLedgersAndTrialBalance();
+                alert("Tax Invoice successfully completed! Posted to Sales Ledger, Journal Entries, and Trial Balance.");
                 switchTab('ledger');
             });
         });
