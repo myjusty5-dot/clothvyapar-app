@@ -781,7 +781,7 @@
                 let totalTax = 0;
                 const customer = document.getElementById('cust-name').value.trim() || 'Walk-in Customer';
 
-                invoiceItems.forEach(item => {
+                invoiceItems.apply = invoiceItems.forEach(item => {
                     let base = (item.price * item.qty) - item.disc;
                     let tax = (base * item.gst) / 100;
                     subtotal += base;
