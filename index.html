@@ -1,857 +1,560 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud POS & Accounting Suite</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        @media print {
-            body * { visibility: hidden; }
-            #printable-invoice, #printable-invoice * { visibility: visible; }
-            #printable-invoice { position: absolute; left: 0; top: 0; width: 100%; }
-            .no-print { display: none !important; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloud POS & Accounting Suite</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style type="text/tailwindcss">
+@layer components{
+.inp{@apply w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-rose-500}
+.lbl{@apply block text-slate-500 text-[10px] font-bold uppercase mb-1}
+.th{@apply p-2.5 border text-left}
+.td{@apply p-2.5 border}
+.card{@apply bg-white p-5 rounded-2xl shadow-sm border border-slate-200}
+.btn{@apply bg-slate-900 text-white py-2 px-3 rounded-xl text-xs font-bold hover:bg-slate-800 transition}
+.nav{@apply w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left}
+.tag{@apply text-[10px] font-bold px-2 py-0.5 rounded-full}
+}
+</style>
+<style>
+@media print{body *{visibility:hidden}#printable-invoice,#printable-invoice *{visibility:visible}#printable-invoice{position:absolute;left:0;top:0;width:100%}.no-print{display:none!important}}
+</style>
 </head>
-<body class="bg-slate-100 min-h-screen flex flex-col justify-between font-sans">
-
-    <!-- AUTHENTICATION CONTAINER -->
-    <div id="auth-container" class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border border-slate-100">
-            <div class="text-center mb-6">
-                <div class="inline-block p-3 bg-rose-50 text-rose-600 rounded-2xl mb-2 shadow-inner">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                    </svg>
-                </div>
-                <h1 class="text-xl font-black text-slate-900 tracking-tight">Cloud POS Portal</h1>
-                <p class="text-xs text-slate-400 mt-1">Smart Cloud Accounting & Subsidiary Suite</p>
-            </div>
-            
-            <h2 id="form-title" class="text-sm font-bold mb-4 text-slate-700 text-center uppercase tracking-wider">Store Portal Login</h2>
-
-            <!-- Login Form -->
-            <div id="login-section">
-                <div class="mb-4">
-                    <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Email Address</label>
-                    <input type="email" id="login-email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 transition" placeholder="store@example.com" required />
-                </div>
-                <div class="mb-5">
-                    <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Password</label>
-                    <input type="password" id="login-password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 transition" placeholder="••••••••" required />
-                </div>
-                <button type="button" id="btn-login" class="w-full bg-slate-900 text-white py-3.5 rounded-2xl hover:bg-slate-800 transition font-bold shadow-lg shadow-slate-900/10 text-sm mb-4">Sign In</button>
-                <div class="flex justify-between text-xs font-medium">
-                    <a href="#" id="link-goto-signup" class="text-rose-600 hover:underline">Create Store Account</a>
-                    <a href="#" id="link-goto-forgot" class="text-slate-400 hover:underline">Forgot Password?</a>
-                </div>
-            </div>
-
-            <!-- Sign Up Form (With Store Details) -->
-            <div id="signup-section" style="display: none;" class="mt-2 space-y-3">
-                <div>
-                    <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Store / Shop Name</label>
-                    <input type="text" id="store-name" value="KOHINOOR FANCY AND LADIES STORE" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" required />
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Store Address</label>
-                        <input type="text" id="store-address" value="Birgunj, Nepal" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" required />
-                    </div>
-                    <div>
-                        <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">PAN / VAT Number</label>
-                        <input type="text" id="store-pan" value="600000000" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" required />
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Email Address</label>
-                    <input type="email" id="signup-email" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" placeholder="store@example.com" required />
-                </div>
-                <div>
-                    <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Password (Min 6 Chars)</label>
-                    <input type="password" id="signup-password" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" placeholder="••••••••" required />
-                </div>
-                <button type="button" id="btn-signup" class="w-full bg-rose-600 text-white py-3 rounded-2xl hover:bg-rose-700 transition font-bold shadow-lg text-sm mb-2">Register Store</button>
-                <div class="text-center">
-                    <a href="#" id="link-goto-login1" class="text-xs text-rose-600 font-medium hover:underline">← Back to Login</a>
-                </div>
-            </div>
-
-            <!-- Forgot Password Modal -->
-            <div id="forgot-password-modal" style="display: none;" class="mt-2">
-                <p class="text-xs text-slate-500 mb-4">Enter your registered email to receive a password recovery link.</p>
-                <input type="email" id="reset-email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-rose-500" placeholder="store@example.com" />
-                <button type="button" id="btn-reset" class="w-full bg-rose-600 text-white py-3.5 rounded-2xl font-bold text-sm hover:bg-rose-700 mb-4 shadow-md">Send Recovery Link</button>
-                <div class="text-center">
-                    <a href="#" id="link-goto-login2" class="text-xs text-rose-600 font-medium hover:underline">← Back to Login</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- DASHBOARD CONTAINER (Pro Left Sidebar Layout) -->
-    <div id="dashboard-container" style="display: none;" class="flex min-h-screen w-full bg-slate-100">
-        
-        <!-- Permanent Left Sidebar Column -->
-        <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between shrink-0 no-print shadow-2xl min-h-screen">
-            <div>
-                <!-- Brand Header in Sidebar -->
-                <div class="p-5 border-b border-slate-800 flex justify-between items-start">
-                    <div>
-                        <span class="bg-rose-600 text-white font-black text-[10px] uppercase px-2 py-0.5 rounded">NP VAT 13%</span>
-                        <h2 id="sidebar-store-name" class="font-black text-white text-sm mt-2 tracking-wide truncate max-w-[130px]">STORE PORTAL</h2>
-                        <p id="sidebar-store-meta" class="text-[11px] text-slate-400 truncate">PAN: --</p>
-                    </div>
-                    <button type="button" onclick="handleLogout()" class="bg-rose-500/20 text-rose-400 hover:bg-rose-600 hover:text-white px-2 py-1 rounded text-[10px] font-bold transition">Sign Out</button>
-                </div>
-
-                <!-- Sidebar Navigation Links -->
-                <nav class="p-3 space-y-1.5 text-xs font-semibold">
-                    <button type="button" id="nav-pos" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition bg-rose-600 text-white shadow-sm text-left">
-                        <span>📄</span>
-                        <span>Tax Invoice POS</span>
-                    </button>
-                    <button type="button" id="nav-sales-book" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left">
-                        <span>📑</span>
-                        <span>Sales Invoices Book</span>
-                    </button>
-                    <button type="button" id="nav-purchase-book" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left">
-                        <span>📦</span>
-                        <span>Purchase Invoices Book</span>
-                    </button>
-                    <button type="button" id="nav-ledger" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left">
-                        <span>📖</span>
-                        <span>General Ledger & Journals</span>
-                    </button>
-                    <button type="button" id="nav-trial" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left">
-                        <span>📊</span>
-                        <span>Trial Balance</span>
-                    </button>
-                </nav>
-            </div>
-
-            <!-- User Info & Logout at Bottom of Sidebar -->
-            <div class="p-4 border-t border-slate-800 bg-slate-950/40">
-                <p id="user-email-display-sidebar" class="text-[11px] text-slate-400 truncate mb-3"></p>
-                <button type="button" onclick="handleLogout()" class="w-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs py-2.5 rounded-xl hover:bg-rose-500 hover:text-white transition font-bold">Secure Sign Out</button>
-            </div>
-        </aside>
-
-        <!-- Main Content Area -->
-        <div class="flex-grow flex flex-col justify-between overflow-x-hidden">
-            <!-- Mobile Top Header Bar -->
-            <header class="bg-slate-900 text-white shadow-md px-4 py-3 flex justify-between items-center md:hidden no-print">
-                <span id="mobile-store-title" class="font-bold text-xs">Cloud POS</span>
-                <div class="flex space-x-1">
-                    <button onclick="switchTab('pos')" class="bg-rose-600 text-[10px] px-2 py-1 rounded">POS</button>
-                    <button onclick="switchTab('sales-book')" class="bg-slate-800 text-[10px] px-2 py-1 rounded">Sales</button>
-                    <button onclick="switchTab('purchase-book')" class="bg-slate-800 text-[10px] px-2 py-1 rounded">Purchase</button>
-                    <button onclick="switchTab('ledger')" class="bg-slate-800 text-[10px] px-2 py-1 rounded">Ledger</button>
-                    <button onclick="handleLogout()" class="bg-rose-500 text-[10px] px-2 py-1 rounded font-bold">Exit</button>
-                </div>
-            </header>
-
-            <!-- Workspace Panel -->
-            <main class="p-4 sm:p-8 max-w-5xl mx-auto w-full flex-grow">
-                
-                <!-- 1. TAX INVOICE POS TAB -->
-                <div id="panel-pos" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Add Item Form -->
-                    <div class="md:col-span-1 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 h-fit space-y-3 no-print">
-                        <h3 class="font-bold text-slate-800 text-sm flex items-center justify-between">
-                            <span>Invoice Line Item</span>
-                            <span class="text-[10px] bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full font-semibold">Nepal VAT (13%)</span>
-                        </h3>
-
-                        <!-- Customer Details Input -->
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
-                            <p class="text-[10px] font-bold text-slate-500 uppercase">Customer Information</p>
-                            <div>
-                                <input type="text" id="cust-name" placeholder="Customer Name (e.g. Ram Shrestha)" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white" oninput="updateCustomerUI()" />
-                            </div>
-                            <div>
-                                <input type="text" id="cust-address" placeholder="Customer Address / Phone" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white" oninput="updateCustomerUI()" />
-                            </div>
-                        </div>
-
-                        <!-- Quick Presets -->
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Quick Select Category</label>
-                            <div class="flex flex-wrap gap-1">
-                                <button type="button" onclick="quickSelect('Designer Kurti', '6204', 'L', 1200, 50, 13)" class="text-[10px] bg-slate-100 hover:bg-rose-50 hover:text-rose-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Kurti</button>
-                                <button type="button" onclick="quickSelect('Silk Saree', '5407', 'Free', 2500, 100, 13)" class="text-[10px] bg-slate-100 hover:bg-rose-50 hover:text-rose-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Saree</button>
-                                <button type="button" onclick="quickSelect('Lehenga Set', '6204', 'M', 4500, 200, 13)" class="text-[10px] bg-slate-100 hover:bg-rose-50 hover:text-rose-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Lehenga</button>
-                                <button type="button" onclick="quickSelect('Cosmetics Kit', '3304', 'Std', 800, 0, 13)" class="text-[10px] bg-slate-100 hover:bg-rose-50 hover:text-rose-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Cosmetics</button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Item Name</label>
-                            <input type="text" id="item-name" placeholder="e.g. Designer Kurti" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none" />
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">HSN Code</label>
-                                <input type="text" id="item-hsn" placeholder="6204" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none" />
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Size</label>
-                                <input type="text" id="item-size" placeholder="L / M / Free" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none" />
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-3 gap-2">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Qty</label>
-                                <input type="number" id="item-qty" value="1" class="w-full px-2 py-2 border rounded-xl text-xs text-center" />
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Price (NPR)</label>
-                                <input type="number" id="item-price" placeholder="1200" class="w-full px-2 py-2 border rounded-xl text-xs text-center" />
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Disc (NPR)</label>
-                                <input type="number" id="item-disc" value="0" class="w-full px-2 py-2 border rounded-xl text-xs text-center" />
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">VAT %</label>
-                            <input type="number" id="item-gst" value="13" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none" />
-                        </div>
-                        <button type="button" id="btn-add-item" class="w-full bg-slate-900 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800 transition shadow-sm">+ Add Line to Invoice</button>
-                    </div>
-
-                    <!-- Live Tax Invoice Preview (Dynamic Store & Customer Info) -->
-                    <div class="md:col-span-2 bg-amber-50/60 p-5 rounded-2xl shadow-md border-2 border-rose-300 flex flex-col justify-between" id="printable-invoice">
-                        <div>
-                            <!-- Invoice Header -->
-                            <div class="border-b-2 border-rose-300 pb-3 mb-3 text-center">
-                                <h2 class="text-xs font-bold uppercase text-slate-700">PAN / VAT Tax Invoice</h2>
-                                <h1 id="invoice-store-title" class="text-xl font-black text-slate-900 tracking-wide mt-0.5">STORE NAME</h1>
-                                <p id="invoice-store-address" class="text-[11px] text-slate-600">Address &bull; Nepal</p>
-                                <p class="text-[10px] text-slate-500 font-semibold mt-0.5">PAN / VAT No: <span id="invoice-store-pan">000000000</span></p>
-                            </div>
-
-                            <!-- Bill Meta Details -->
-                            <div class="grid grid-cols-2 text-[11px] border-b border-rose-200 pb-2 mb-3 text-slate-700">
-                                <div>
-                                    <p><strong class="text-slate-900">Customer:</strong> <span id="inv-cust-name">Cash / Walk-in Customer</span></p>
-                                    <p id="inv-cust-address">Nepal</p>
-                                </div>
-                                <div class="text-right">
-                                    <p><strong class="text-slate-900">Invoice No:</strong> <span id="inv-no">0001/2082-83</span></p>
-                                    <p><strong class="text-slate-900">Date:</strong> <span id="inv-date">--</span></p>
-                                    <p><strong class="text-slate-900">Mode:</strong> Cash</p>
-                                </div>
-                            </div>
-
-                            <!-- Items Table -->
-                            <div class="overflow-x-auto min-h-[160px]">
-                                <table class="w-full text-left text-[11px] border-collapse">
-                                    <thead>
-                                        <tr class="border-b border-rose-300 text-slate-800">
-                                            <th class="py-1 px-1">S.No.</th>
-                                            <th class="py-1 px-1">Item Description</th>
-                                            <th class="py-1 px-1">HSN</th>
-                                            <th class="py-1 px-1">Qty</th>
-                                            <th class="py-1 px-1">Size</th>
-                                            <th class="py-1 px-1">Price</th>
-                                            <th class="py-1 px-1">Disc</th>
-                                            <th class="py-1 px-1">VAT</th>
-                                            <th class="py-1 px-1 text-right">Total (NPR)</th>
-                                            <th class="no-print"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="invoice-items-list" class="divide-y divide-rose-100">
-                                        <tr>
-                                            <td colspan="10" class="text-center py-6 text-slate-400 italic">No invoice items added yet. Use form on left.</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Totals & Footer -->
-                        <div class="border-t-2 border-rose-300 pt-3 mt-4">
-                            <div class="flex justify-between items-center text-sm font-black text-slate-900 mb-2">
-                                <span>Total Payable Amount:</span>
-                                <span id="invoice-grand-total" class="text-rose-600 text-lg">NPR 0.00</span>
-                            </div>
-                            <div class="bg-rose-50 p-2 rounded-lg text-[10px] text-slate-700 mb-3 space-y-0.5">
-                                <p id="amount-in-words" class="font-bold italic">Zero Rupees Only</p>
-                                <p id="tax-breakdown-text">Tax Summary: Taxable Amount = NPR 0.00 | VAT (13%) = NPR 0.00</p>
-                            </div>
-                            <div class="grid grid-cols-2 text-[10px] text-slate-600 border-t border-rose-200 pt-2 mb-3">
-                                <div>
-                                    <p class="font-bold text-slate-800">Terms & Conditions:</p>
-                                    <p>1. Goods once sold will not be returned.</p>
-                                    <p>2. Computer generated invoice.</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="font-bold text-slate-800">Bank: Nabil Bank | A/C: 010000000000</p>
-                                    <p id="invoice-footer-store" class="mt-3 font-bold text-slate-900">For Store Name</p>
-                                </div>
-                            </div>
-                            <div class="flex space-x-2 no-print">
-                                <button type="button" onclick="window.print()" class="flex-1 bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-slate-900 transition shadow">🖨️ Print Invoice</button>
-                                <button type="button" id="btn-complete-sale" class="flex-1 bg-rose-600 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-rose-700 transition shadow">💾 Post to Sales Book</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. SALES INVOICES BOOK TAB -->
-                <div id="panel-sales-book" style="display: none;" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                    <div class="flex justify-between items-center border-b pb-3">
-                        <h3 class="font-bold text-slate-800 text-sm">📑 Sales Invoices Subsidiary Book</h3>
-                        <span class="text-xs bg-rose-50 text-rose-600 px-2.5 py-1 rounded-full font-bold">Auto-Synced with Ledger</span>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-100 text-slate-700 uppercase text-[10px]">
-                                    <th class="p-2.5 border">Inv #</th>
-                                    <th class="p-2.5 border">Date</th>
-                                    <th class="p-2.5 border">Customer Name</th>
-                                    <th class="p-2.5 border text-right">Items Count</th>
-                                    <th class="p-2.5 border text-right">Taxable (NPR)</th>
-                                    <th class="p-2.5 border text-right">VAT (13%)</th>
-                                    <th class="p-2.5 border text-right font-bold">Total (NPR)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="sales-book-body" class="divide-y">
-                                <tr>
-                                    <td class="p-2.5 border text-slate-400 text-center" colspan="7">No sales invoices recorded yet.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 3. PURCHASE INVOICES BOOK TAB -->
-                <div id="panel-purchase-book" style="display: none;" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
-                    <!-- Add Purchase Form -->
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-                        <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Record New Supplier Purchase Invoice</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                            <input type="text" id="purch-supplier" placeholder="Supplier / Vendor Name" class="px-3 py-2 border rounded-xl text-xs bg-white" />
-                            <input type="text" id="purch-item" placeholder="Item / Material Bought" class="px-3 py-2 border rounded-xl text-xs bg-white" />
-                            <input type="number" id="purch-amount" placeholder="Total Cost (NPR)" class="px-3 py-2 border rounded-xl text-xs bg-white" />
-                            <button type="button" id="btn-add-purchase" class="bg-slate-900 text-white py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition">Save Purchase</button>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between items-center border-b pb-3 mb-3">
-                            <h3 class="font-bold text-slate-800 text-sm">📦 Purchase Invoices Subsidiary Book</h3>
-                            <span class="text-xs bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full font-bold">Auto-Synced with Ledger</span>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-xs text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-slate-100 text-slate-700 uppercase text-[10px]">
-                                        <th class="p-2.5 border">Ref #</th>
-                                        <th class="p-2.5 border">Date</th>
-                                        <th class="p-2.5 border">Supplier / Vendor</th>
-                                        <th class="p-2.5 border">Description</th>
-                                        <th class="p-2.5 border text-right font-bold">Cost (NPR)</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="purchase-book-body" class="divide-y">
-                                    <tr>
-                                        <td class="p-2.5 border text-slate-400 text-center" colspan="5">No purchase invoices recorded yet.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 4. GENERAL LEDGER & JOURNALS TAB -->
-                <div id="panel-ledger" style="display: none;" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-sm mb-3">📖 Master General Ledger</h3>
-                        <div id="ledger-list" class="divide-y text-xs max-h-56 overflow-y-auto border rounded-xl p-3 bg-slate-50">
-                            <div class="text-center py-6 text-slate-400">No transactions posted yet.</div>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-sm mb-3">📝 Automated Double-Entry Journal Entries</h3>
-                        <div id="journal-list" class="divide-y text-xs max-h-56 overflow-y-auto border rounded-xl p-3 bg-slate-50 font-mono">
-                            <div class="text-center py-6 text-slate-400 font-sans">No journal entries generated yet.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 5. TRIAL BALANCE TAB -->
-                <div id="panel-trial" style="display: none;" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                    <div class="flex justify-between items-center border-b pb-3">
-                        <h3 class="font-bold text-slate-800 text-sm">📊 Automated Trial Balance Summary</h3>
-                        <span class="text-xs bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-bold">Balanced Accounts</span>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-100 text-slate-700 uppercase text-[10px]">
-                                    <th class="p-2.5 border">Account Head</th>
-                                    <th class="p-2.5 border text-right">Debit (NPR)</th>
-                                    <th class="p-2.5 border text-right">Credit (NPR)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="trial-balance-body" class="divide-y">
-                                <tr>
-                                    <td class="p-2.5 border text-slate-400" colspan="3">No financial data to compute trial balance yet.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </main>
-
-            <!-- Footer -->
-            <footer class="bg-white text-center py-3 text-[11px] text-slate-400 border-t no-print">
-                <span id="footer-store-title">Cloud POS & Accounting Suite</span> &bull; Pro Cloud POS
-            </footer>
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        const SUPABASE_URL = 'https://ylmzbyhyguwiipugdxjc.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_uj8pIAiX8r1yvxPzJrBW_w_0RFSFhMz';
-
-        let supabaseClient;
-        let invoiceItems = [];
-        let salesInvoices = [];
-        let purchaseInvoices = [];
-        let currentStoreInfo = {
-            name: "KOHINOOR FANCY AND LADIES STORE",
-            address: "Birgunj, Nepal",
-            pan: "600000000"
-        };
-
-        try {
-            if (window.supabase && typeof window.supabase.createClient === 'function') {
-                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            }
-        } catch (err) {
-            alert("Initialization Error: " + err.message);
-        }
-
-        document.getElementById('inv-date').innerText = new Date().toLocaleDateString();
-
-        function updateStoreBrandingUI() {
-            document.getElementById('sidebar-store-name').innerText = currentStoreInfo.name;
-            document.getElementById('sidebar-store-meta').innerText = 'PAN: ' + currentStoreInfo.pan;
-            document.getElementById('mobile-store-title').innerText = currentStoreInfo.name;
-            document.getElementById('invoice-store-title').innerText = currentStoreInfo.name;
-            document.getElementById('invoice-store-address').innerText = currentStoreInfo.address;
-            document.getElementById('invoice-store-pan').innerText = currentStoreInfo.pan;
-            document.getElementById('invoice-footer-store').innerText = 'For ' + currentStoreInfo.name;
-            document.getElementById('footer-store-title').innerText = currentStoreInfo.name;
-        }
-
-        window.updateCustomerUI = function() {
-            const name = document.getElementById('cust-name').value.trim();
-            const addr = document.getElementById('cust-address').value.trim();
-            document.getElementById('inv-cust-name').innerText = name || 'Cash / Walk-in Customer';
-            document.getElementById('inv-cust-address').innerText = addr || 'Nepal';
-        }
-
-        window.quickSelect = function(name, hsn, size, price, disc, gst) {
-            document.getElementById('item-name').value = name;
-            document.getElementById('item-hsn').value = hsn;
-            document.getElementById('item-size').value = size;
-            document.getElementById('item-price').value = price;
-            document.getElementById('item-disc').value = disc;
-            document.getElementById('item-gst').value = gst;
-            document.getElementById('item-qty').value = 1;
-        }
-
-        function showView(viewName) {
-            document.getElementById('auth-container').style.display = viewName === 'auth' ? 'flex' : 'none';
-            document.getElementById('dashboard-container').style.display = viewName === 'dashboard' ? 'flex' : 'none';
-        }
-
-        function toggleAuthForm(formId, title) {
-            document.getElementById('login-section').style.display = formId === 'login' ? 'block' : 'none';
-            document.getElementById('signup-section').style.display = formId === 'signup' ? 'block' : 'none';
-            document.getElementById('forgot-password-modal').style.display = formId === 'forgot' ? 'block' : 'none';
-            document.getElementById('form-title').innerText = title;
-        }
-
-        window.switchTab = function(tabName) {
-            const tabs = ['pos', 'sales-book', 'purchase-book', 'ledger', 'trial'];
-            tabs.forEach(t => {
-                const panel = document.getElementById('panel-' + t);
-                const btn = document.getElementById('nav-' + t);
-                if (panel) panel.style.display = t === tabName ? (t === 'pos' ? 'grid' : 'block') : 'none';
-                if (btn) {
-                    btn.className = t === tabName 
-                        ? 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition bg-rose-600 text-white shadow-sm text-left' 
-                        : 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left';
-                }
-            });
-        }
-
-        window.handleLogout = async function() {
-            if (supabaseClient) await supabaseClient.auth.signOut();
-            invoiceItems = [];
-            salesInvoices = [];
-            purchaseInvoices = [];
-            updateInvoiceUI();
-            showView('auth');
-            toggleAuthForm('login', 'Store Portal Login');
-        }
-
-        function updateInvoiceUI() {
-            const list = document.getElementById('invoice-items-list');
-            const totalEl = document.getElementById('invoice-grand-total');
-            const wordsEl = document.getElementById('amount-in-words');
-            const taxTextEl = document.getElementById('tax-breakdown-text');
-
-            if (invoiceItems.length === 0) {
-                list.innerHTML = '<tr><td colspan="10" class="text-center py-6 text-slate-400 italic">No invoice items added yet. Use form on left.</td></tr>';
-                totalEl.innerText = 'NPR 0.00';
-                wordsEl.innerText = 'Zero Rupees Only';
-                taxTextEl.innerText = 'Tax Summary: Taxable Amount = NPR 0.00 | VAT (13%) = NPR 0.00';
-                return;
-            }
-
-            let html = '';
-            let grandTotal = 0;
-            let totalTaxable = 0;
-            let totalTax = 0;
-
-            invoiceItems.forEach((item, index) => {
-                const baseAmount = (item.price * item.qty) - item.disc;
-                const taxAmount = (baseAmount * item.gst) / 100;
-                const totalAmount = baseAmount + taxAmount;
-
-                grandTotal += totalAmount;
-                totalTaxable += baseAmount;
-                totalTax += taxAmount;
-
-                html += `<tr class="border-b border-rose-100">
-                    <td class="py-1 px-1">${index + 1}</td>
-                    <td class="py-1 px-1 font-semibold">${item.name}</td>
-                    <td class="py-1 px-1">${item.hsn}</td>
-                    <td class="py-1 px-1">${item.qty}</td>
-                    <td class="py-1 px-1">${item.size}</td>
-                    <td class="py-1 px-1">NPR ${item.price.toFixed(2)}</td>
-                    <td class="py-1 px-1">NPR ${item.disc.toFixed(2)}</td>
-                    <td class="py-1 px-1">${item.gst}%</td>
-                    <td class="py-1 px-1 text-right font-bold">NPR ${totalAmount.toFixed(2)}</td>
-                    <td class="no-print text-right"><button onclick="removeItem(${index})" class="text-rose-600 font-bold px-1">✕</button></td>
-                </tr>`;
-            });
-
-            list.innerHTML = html;
-            totalEl.innerText = 'NPR ' + grandTotal.toFixed(2);
-            wordsEl.innerText = 'Total Amount: NPR ' + grandTotal.toFixed(2);
-            taxTextEl.innerText = `Tax Summary: Taxable Amount = NPR ${totalTaxable.toFixed(2)} | VAT (13%) = NPR ${totalTax.toFixed(2)}`;
-        }
-
-        window.removeItem = function(index) {
-            invoiceItems.splice(index, 1);
-            updateInvoiceUI();
-        }
-
-        function updateAccountingAndBooks() {
-            const salesBookBody = document.getElementById('sales-book-body');
-            const purchaseBookBody = document.getElementById('purchase-book-body');
-            const ledgerList = document.getElementById('ledger-list');
-            const journalList = document.getElementById('journal-list');
-            const trialBody = document.getElementById('trial-balance-body');
-
-            // 1. Sales Book UI
-            if (salesInvoices.length === 0) {
-                salesBookBody.innerHTML = '<tr><td class="p-2.5 border text-slate-400 text-center" colspan="7">No sales invoices recorded yet.</td></tr>';
-            } else {
-                let html = '';
-                salesInvoices.forEach(s => {
-                    html += `<tr class="hover:bg-slate-50">
-                        <td class="p-2.5 border font-bold text-rose-600">#${s.invNo}</td>
-                        <td class="p-2.5 border text-slate-500">${s.date}</td>
-                        <td class="p-2.5 border font-semibold">${s.customer}</td>
-                        <td class="p-2.5 border text-right">${s.itemsCount}</td>
-                        <td class="p-2.5 border text-right">NPR ${s.subtotal.toFixed(2)}</td>
-                        <td class="p-2.5 border text-right">NPR ${s.tax.toFixed(2)}</td>
-                        <td class="p-2.5 border text-right font-bold text-emerald-600">NPR ${s.total.toFixed(2)}</td>
-                    </tr>`;
-                });
-                salesBookBody.innerHTML = html;
-            }
-
-            // 2. Purchase Book UI
-            if (purchaseInvoices.length === 0) {
-                purchaseBookBody.innerHTML = '<tr><td class="p-2.5 border text-slate-400 text-center" colspan="5">No purchase invoices recorded yet.</td></tr>';
-            } else {
-                let html = '';
-                purchaseInvoices.forEach(p => {
-                    html += `<tr class="hover:bg-slate-50">
-                        <td class="p-2.5 border font-bold text-blue-600">#${p.refNo}</td>
-                        <td class="p-2.5 border text-slate-500">${p.date}</td>
-                        <td class="p-2.5 border font-semibold">${p.supplier}</td>
-                        <td class="p-2.5 border text-slate-600">${p.item}</td>
-                        <td class="p-2.5 border text-right font-bold text-rose-600">NPR ${p.amount.toFixed(2)}</td>
-                    </tr>`;
-                });
-                purchaseBookBody.innerHTML = html;
-            }
-
-            // 3. Ledger & Journals & Trial Balance
-            if (salesInvoices.length === 0 && purchaseInvoices.length === 0) {
-                ledgerList.innerHTML = '<div class="text-center py-6 text-slate-400">No transactions posted yet.</div>';
-                journalList.innerHTML = '<div class="text-center py-6 text-slate-400 font-sans">No journal entries generated yet.</div>';
-                trialBody.innerHTML = '<tr><td class="p-2.5 border text-slate-400" colspan="3">No financial data to compute trial balance yet.</td></tr>';
-                return;
-            }
-
-            let ledgerHtml = '';
-            let journalHtml = '';
-            let totalSalesRev = 0;
-            let totalVAT = 0;
-            let totalCashIn = 0;
-            let totalPurchases = 0;
-            let totalCashOut = 0;
-
-            salesInvoices.forEach(s => {
-                ledgerHtml += `<div class="py-2 flex justify-between items-center border-b">
-                    <div><strong>Sale Inv #${s.invNo}</strong> <span class="text-slate-400">(${s.customer})</span></div>
-                    <span class="font-bold text-emerald-600">+NPR ${s.total.toFixed(2)}</span>
-                </div>`;
-                totalSalesRev += s.subtotal;
-                totalVAT += s.tax;
-                totalCashIn += s.total;
-
-                journalHtml += `<div class="p-2 mb-2 bg-white rounded border shadow-sm">
-                    <p class="text-[10px] text-slate-400 font-sans">${s.date} - Sales Ref: #${s.invNo}</p>
-                    <p class="text-rose-700 font-bold">Dr. Cash / Bank A/c ................................ NPR ${s.total.toFixed(2)}</p>
-                    <p class="pl-4 text-slate-700">Cr. Sales Revenue A/c .......................... NPR ${s.subtotal.toFixed(2)}</p>
-                    <p class="pl-4 text-slate-700">Cr. Output VAT Payable A/c ................ NPR ${s.tax.toFixed(2)}</p>
-                </div>`;
-            });
-
-            purchaseInvoices.forEach(p => {
-                ledgerHtml += `<div class="py-2 flex justify-between items-center border-b">
-                    <div><strong>Purchase Ref #${p.refNo}</strong> <span class="text-slate-400">(${p.supplier})</span></div>
-                    <span class="font-bold text-rose-600">-NPR ${p.amount.toFixed(2)}</span>
-                </div>`;
-                totalPurchases += p.amount;
-                totalCashOut += p.amount;
-
-                journalHtml += `<div class="p-2 mb-2 bg-white rounded border shadow-sm">
-                    <p class="text-[10px] text-slate-400 font-sans">${p.date} - Purchase Ref: #${p.refNo}</p>
-                    <p class="text-blue-700 font-bold">Dr. Purchases / Stock A/c .................... NPR ${p.amount.toFixed(2)}</p>
-                    <p class="pl-4 text-slate-700">Cr. Cash / Bank A/c ................................ NPR ${p.amount.toFixed(2)}</p>
-                </div>`;
-            });
-
-            ledgerList.innerHTML = ledgerHtml;
-            journalList.innerHTML = journalHtml;
-
-            let netCash = totalCashIn - totalCashOut;
-            let totalDebit = netCash + totalPurchases;
-            let totalCredit = totalSalesRev + totalVAT;
-
-            trialBody.innerHTML = `
-                <tr>
-                    <td class="p-2.5 border font-semibold">Cash in Hand / Bank A/c (Net Asset)</td>
-                    <td class="p-2.5 border text-right font-bold text-slate-800">NPR ${netCash.toFixed(2)}</td>
-                    <td class="p-2.5 border text-right">-</td>
-                </tr>
-                <tr>
-                    <td class="p-2.5 border font-semibold">Purchases / Stock A/c (Expense)</td>
-                    <td class="p-2.5 border text-right font-bold text-slate-800">NPR ${totalPurchases.toFixed(2)}</td>
-                    <td class="p-2.5 border text-right">-</td>
-                </tr>
-                <tr>
-                    <td class="p-2.5 border font-semibold">Sales Revenue A/c (Income)</td>
-                    <td class="p-2.5 border text-right">-</td>
-                    <td class="p-2.5 border text-right font-bold text-slate-800">NPR ${totalSalesRev.toFixed(2)}</td>
-                </tr>
-                <tr>
-                    <td class="p-2.5 border font-semibold">Output VAT Payable (Liability)</td>
-                    <td class="p-2.5 border text-right">-</td>
-                    <td class="p-2.5 border text-right font-bold text-slate-800">NPR ${totalVAT.toFixed(2)}</td>
-                </tr>
-                <tr class="bg-slate-50 font-black">
-                    <td class="p-2.5 border">TOTAL TRIAL BALANCE</td>
-                    <td class="p-2.5 border text-right text-emerald-600">NPR ${totalDebit.toFixed(2)}</td>
-                    <td class="p-2.5 border text-right text-emerald-600">NPR ${totalCredit.toFixed(2)}</td>
-                </tr>
-            `;
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('link-goto-signup').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('signup', 'Create Store Account'); });
-            document.getElementById('link-goto-forgot').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('forgot', 'Recover Password'); });
-            document.getElementById('link-goto-login1').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Store Portal Login'); });
-            document.getElementById('link-goto-login2').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Store Portal Login'); });
-
-            document.getElementById('nav-pos').addEventListener('click', () => switchTab('pos'));
-            document.getElementById('nav-sales-book').addEventListener('click', () => switchTab('sales-book'));
-            document.getElementById('nav-purchase-book').addEventListener('click', () => switchTab('purchase-book'));
-            document.getElementById('nav-ledger').addEventListener('click', () => switchTab('ledger'));
-            document.getElementById('nav-trial').addEventListener('click', () => switchTab('trial'));
-
-            document.getElementById('btn-login').addEventListener('click', async () => {
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
-                if (!email || !password) return alert("Please fill in email and password.");
-                
-                if (!supabaseClient) return alert("Supabase client not initialized.");
-                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                if (error) alert("Login Error: " + error.message);
-                else {
-                    document.getElementById('user-email-display-sidebar').innerText = data.user.email;
-                    if (data.user.user_metadata && data.user.user_metadata.store_name) {
-                        currentStoreInfo = {
-                            name: data.user.user_metadata.store_name,
-                            address: data.user.user_metadata.store_address,
-                            pan: data.user.user_metadata.store_pan
-                        };
-                    }
-                    updateStoreBrandingUI();
-                    showView('dashboard');
-                }
-            });
-
-            document.getElementById('btn-signup').addEventListener('click', async () => {
-                const storeName = document.getElementById('store-name').value.trim();
-                const storeAddress = document.getElementById('store-address').value.trim();
-                const storePan = document.getElementById('store-pan').value.trim();
-                const email = document.getElementById('signup-email').value;
-                const password = document.getElementById('signup-password').value;
-
-                if (!storeName || !storeAddress || !storePan || !email || !password || password.length < 6) {
-                    return alert("Please fill in all store details and password (min 6 chars).");
-                }
-
-                if (!supabaseClient) return alert("Supabase client not initialized.");
-
-                const { data, error } = await supabaseClient.auth.signUp({ 
-                    email, 
-                    password,
-                    options: {
-                        data: { store_name: storeName, store_address: storeAddress, store_pan: storePan }
-                    }
-                });
-                
-                if (error) {
-                    alert("Sign Up Error: " + error.message);
-                } else if (data.user && data.user.identities && data.user.identities.length === 0) {
-                    alert("An account with this email already exists! Please log in instead.");
-                    toggleAuthForm('login', 'Store Portal Login');
-                } else {
-                    currentStoreInfo = { name: storeName, address: storeAddress, pan: storePan };
-                    updateStoreBrandingUI();
-                    alert("Store account created successfully! You can now log in.");
-                    toggleAuthForm('login', 'Store Portal Login');
-                }
-            });
-
-            document.getElementById('btn-reset').addEventListener('click', async () => {
-                const email = document.getElementById('reset-email').value;
-                if (!email) return alert("Please enter your email.");
-                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
-                if (error) alert("Error: " + error.message);
-                else {
-                    alert("Password recovery email sent!");
-                    toggleAuthForm('login', 'Store Portal Login');
-                }
-            });
-
-            document.getElementById('btn-add-item').addEventListener('click', () => {
-                const name = document.getElementById('item-name').value.trim();
-                const hsn = document.getElementById('item-hsn').value.trim() || '6204';
-                const size = document.getElementById('item-size').value.trim() || 'Free';
-                const qty = parseInt(document.getElementById('item-qty').value) || 1;
-                const price = parseFloat(document.getElementById('item-price').value) || 0;
-                const disc = parseFloat(document.getElementById('item-disc').value) || 0;
-                const gst = parseFloat(document.getElementById('item-gst').value) || 13;
-
-                if (!name || price <= 0) {
-                    alert("Please enter a valid item name and price.");
-                    return;
-                }
-
-                invoiceItems.push({ name, hsn, size, qty, price, disc, gst });
-                document.getElementById('item-name').value = '';
-                document.getElementById('item-price').value = '';
-                document.getElementById('item-disc').value = '0';
-                updateInvoiceUI();
-            });
-
-            document.getElementById('btn-complete-sale').addEventListener('click', () => {
-                if (invoiceItems.length === 0) return alert("Invoice is empty!");
-
-                let subtotal = 0;
-                let totalTax = 0;
-                let itemsCount = 0;
-
-                invoiceItems.forEach(item => {
-                    let base = (item.price * item.qty) - item.disc;
-                    let tax = (base * item.gst) / 100;
-                    subtotal += base;
-                    totalTax += tax;
-                    itemsCount += item.qty;
-                });
-
-                let grandTotal = subtotal + totalTax;
-                let invNo = '00' + Math.floor(100 + Math.random() * 900) + '/2082-83';
-                let customerName = document.getElementById('cust-name').value.trim() || 'Cash / Walk-in Customer';
-
-                salesInvoices.unshift({
-                    invNo,
-                    customer: customerName,
-                    itemsCount,
-                    subtotal,
-                    tax: totalTax,
-                    total: grandTotal,
-                    date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' + new Date().toLocaleDateString()
-                });
-
-                invoiceItems = [];
-                document.getElementById('cust-name').value = '';
-                document.getElementById('cust-address').value = '';
-                updateCustomerUI();
-                updateInvoiceUI();
-                updateAccountingAndBooks();
-                alert("Tax Invoice successfully completed and posted to Sales Invoices Book & Ledger!");
-                switchTab('sales-book');
-            });
-
-            document.getElementById('btn-add-purchase').addEventListener('click', () => {
-                const supplier = document.getElementById('purch-supplier').value.trim();
-                const item = document.getElementById('purch-item').value.trim();
-                const amount = parseFloat(document.getElementById('purch-amount').value) || 0;
-
-                if (!supplier || !item || amount <= 0) {
-                    return alert("Please enter valid supplier name, item description, and amount.");
-                }
-
-                let refNo = 'PUR-' + Math.floor(1000 + Math.random() * 9000);
-
-                purchaseInvoices.unshift({
-                    refNo,
-                    supplier,
-                    item,
-                    amount,
-                    date: new Date().toLocaleDateString()
-                });
-
-                document.getElementById('purch-supplier').value = '';
-                document.getElementById('purch-item').value = '';
-                document.getElementById('purch-amount').value = '';
-
-                updateAccountingAndBooks();
-                alert("Purchase invoice successfully recorded and posted to Purchase Book & Ledger!");
-            });
-        });
-    </script>
+<body class="bg-slate-100 min-h-screen font-sans">
+
+<!-- AUTH -->
+<div id="auth-container" class="flex items-center justify-center min-h-screen p-4">
+<div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border border-slate-100">
+<div class="text-center mb-6">
+<div class="inline-block p-3 bg-rose-50 text-rose-600 rounded-2xl mb-2 shadow-inner"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg></div>
+<h1 class="text-xl font-black text-slate-900">Cloud POS Portal</h1>
+<p class="text-xs text-slate-400 mt-1">Smart Cloud Accounting & Subsidiary Suite</p>
+</div>
+<h2 id="form-title" class="text-sm font-bold mb-4 text-slate-700 text-center uppercase tracking-wider">Store Portal Login</h2>
+<div id="login-section">
+<div class="mb-4"><label class="lbl">Email Address</label><input type="email" id="login-email" class="inp py-3" placeholder="store@example.com"></div>
+<div class="mb-5"><label class="lbl">Password</label><input type="password" id="login-password" class="inp py-3" placeholder="••••••••"></div>
+<button type="button" id="btn-login" class="btn w-full py-3.5 mb-4">Sign In</button>
+<div class="flex justify-between text-xs font-medium"><a href="#" id="link-goto-signup" class="text-rose-600 hover:underline">Create Store Account</a><a href="#" id="link-goto-forgot" class="text-slate-400 hover:underline">Forgot Password?</a></div>
+</div>
+<div id="signup-section" style="display:none" class="mt-2 space-y-3">
+<div><label class="lbl">Store / Shop Name</label><input type="text" id="store-name" value="KOHINOOR FANCY AND LADIES STORE" class="inp"></div>
+<div class="grid grid-cols-2 gap-2">
+<div><label class="lbl">Store Address</label><input type="text" id="store-address" value="Birgunj, Nepal" class="inp"></div>
+<div><label class="lbl">PAN / VAT Number</label><input type="text" id="store-pan" value="600000000" class="inp"></div>
+</div>
+<div><label class="lbl">Email Address</label><input type="email" id="signup-email" class="inp" placeholder="store@example.com"></div>
+<div><label class="lbl">Password (Min 6 Chars)</label><input type="password" id="signup-password" class="inp" placeholder="••••••••"></div>
+<button type="button" id="btn-signup" class="w-full bg-rose-600 text-white py-3 rounded-2xl hover:bg-rose-700 font-bold text-sm">Register Store</button>
+<div class="text-center"><a href="#" id="link-goto-login1" class="text-xs text-rose-600 font-medium hover:underline">← Back to Login</a></div>
+</div>
+<div id="forgot-password-modal" style="display:none" class="mt-2">
+<p class="text-xs text-slate-500 mb-4">Enter your registered email to receive a password recovery link.</p>
+<input type="email" id="reset-email" class="inp py-3 mb-4" placeholder="store@example.com">
+<button type="button" id="btn-reset" class="w-full bg-rose-600 text-white py-3.5 rounded-2xl font-bold text-sm hover:bg-rose-700 mb-4">Send Recovery Link</button>
+<div class="text-center"><a href="#" id="link-goto-login2" class="text-xs text-rose-600 font-medium hover:underline">← Back to Login</a></div>
+</div>
+</div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard-container" style="display:none" class="flex min-h-screen w-full">
+<aside class="hidden md:flex w-64 bg-slate-900 text-slate-300 flex-col justify-between shrink-0 no-print shadow-2xl">
+<div>
+<div class="p-5 border-b border-slate-800">
+<span class="bg-rose-600 text-white font-black text-[10px] uppercase px-2 py-0.5 rounded">NP VAT 13%</span>
+<h2 id="sidebar-store-name" class="font-black text-white text-sm mt-2 truncate">STORE PORTAL</h2>
+<p id="sidebar-store-meta" class="text-[11px] text-slate-400 truncate">PAN: --</p>
+</div>
+<nav class="p-3 space-y-1 text-xs font-semibold">
+<button type="button" id="nav-pos" class="nav">📄 <span>Tax Invoice POS</span></button>
+<button type="button" id="nav-inventory" class="nav">🏷️ <span>Inventory & Stock</span><span id="low-badge" class="hidden tag bg-amber-500 text-white">0</span></button>
+<button type="button" id="nav-sales-book" class="nav">📑 <span>Sales Invoices Book</span></button>
+<button type="button" id="nav-sales-account" class="nav">💰 <span>Sales Account</span></button>
+<button type="button" id="nav-purchase-book" class="nav">📦 <span>Purchase Book</span></button>
+<button type="button" id="nav-expenses" class="nav">🧾 <span>Expenses</span></button>
+<button type="button" id="nav-ledger" class="nav">📖 <span>Ledger & Journals</span></button>
+<button type="button" id="nav-trial" class="nav">📊 <span>Trial Balance</span></button>
+</nav>
+</div>
+<div class="p-4 border-t border-slate-800 bg-slate-950/40">
+<p id="user-email-display-sidebar" class="text-[11px] text-slate-400 truncate mb-3"></p>
+<button type="button" onclick="handleLogout()" class="w-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs py-2.5 rounded-xl hover:bg-rose-500 hover:text-white transition font-bold">Secure Sign Out</button>
+</div>
+</aside>
+
+<div class="flex-grow flex flex-col min-w-0">
+<header class="bg-slate-900 text-white px-3 py-2 md:hidden no-print">
+<div id="mobile-store-title" class="font-bold text-xs mb-1.5">Cloud POS</div>
+<div class="flex gap-1 overflow-x-auto text-[10px]">
+<button onclick="switchTab('pos')" class="bg-rose-600 px-2 py-1 rounded">POS</button>
+<button onclick="switchTab('inventory')" class="bg-slate-700 px-2 py-1 rounded">Stock</button>
+<button onclick="switchTab('sales-book')" class="bg-slate-700 px-2 py-1 rounded">Sales</button>
+<button onclick="switchTab('sales-account')" class="bg-slate-700 px-2 py-1 rounded">Account</button>
+<button onclick="switchTab('purchase-book')" class="bg-slate-700 px-2 py-1 rounded">Purchase</button>
+<button onclick="switchTab('expenses')" class="bg-slate-700 px-2 py-1 rounded">Expense</button>
+<button onclick="switchTab('ledger')" class="bg-slate-700 px-2 py-1 rounded">Ledger</button>
+<button onclick="switchTab('trial')" class="bg-slate-700 px-2 py-1 rounded">Trial</button>
+<button onclick="handleLogout()" class="bg-rose-500 px-2 py-1 rounded font-bold">Exit</button>
+</div>
+</header>
+
+<main class="p-4 sm:p-6 max-w-6xl mx-auto w-full flex-grow">
+
+<!-- 1. POS -->
+<div id="panel-pos" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="md:col-span-1 card h-fit space-y-3 no-print">
+<h3 class="font-bold text-slate-800 text-sm flex justify-between"><span>Invoice Line Item</span><span class="tag bg-rose-50 text-rose-600">Nepal VAT (13%)</span></h3>
+
+<div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 space-y-2">
+<p class="text-[10px] font-bold text-emerald-700 uppercase">📷 Scan Barcode</p>
+<div class="flex gap-1">
+<input type="text" id="barcode-input" placeholder="Scan or type barcode, press Enter" class="inp" autocomplete="off">
+<button type="button" onclick="openCamera()" class="btn px-2" title="Use camera">📷</button>
+</div>
+<p id="scan-msg" class="text-[11px] min-h-[14px]"></p>
+</div>
+
+<div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+<p class="text-[10px] font-bold text-slate-500 uppercase">Customer Information</p>
+<input type="text" id="cust-name" placeholder="Customer Name" class="inp" oninput="updateCustomerUI()">
+<input type="text" id="cust-address" placeholder="Customer Address / Phone" class="inp" oninput="updateCustomerUI()">
+</div>
+
+<div>
+<label class="lbl">Quick Select Category</label>
+<div class="flex flex-wrap gap-1">
+<button type="button" onclick="quickSelect('Designer Kurti','6204','L',1200,50,13)" class="tag bg-slate-100 border hover:bg-rose-50">Kurti</button>
+<button type="button" onclick="quickSelect('Silk Saree','5407','Free',2500,100,13)" class="tag bg-slate-100 border hover:bg-rose-50">Saree</button>
+<button type="button" onclick="quickSelect('Lehenga Set','6204','M',4500,200,13)" class="tag bg-slate-100 border hover:bg-rose-50">Lehenga</button>
+<button type="button" onclick="quickSelect('Cosmetics Kit','3304','Std',800,0,13)" class="tag bg-slate-100 border hover:bg-rose-50">Cosmetics</button>
+</div>
+</div>
+
+<div><label class="lbl">Item Name <span class="normal-case font-normal">(pick from inventory to auto-fill)</span></label>
+<input type="text" id="item-name" list="inv-datalist" placeholder="e.g. Designer Kurti" class="inp"><datalist id="inv-datalist"></datalist></div>
+<div class="grid grid-cols-2 gap-2">
+<div><label class="lbl">HSN Code</label><input type="text" id="item-hsn" placeholder="6204" class="inp"></div>
+<div><label class="lbl">Size</label><input type="text" id="item-size" placeholder="L / M / Free" class="inp"></div>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div><label class="lbl">Qty</label><input type="number" id="item-qty" value="1" min="1" class="inp text-center"></div>
+<div><label class="lbl">Price</label><input type="number" id="item-price" placeholder="1200" class="inp text-center"></div>
+<div><label class="lbl">Disc</label><input type="number" id="item-disc" value="0" class="inp text-center"></div>
+</div>
+<div><label class="lbl">VAT %</label><input type="number" id="item-gst" value="13" class="inp"></div>
+<button type="button" id="btn-add-item" class="btn w-full">+ Add Line to Invoice</button>
+</div>
+
+<div class="md:col-span-2 bg-amber-50/60 p-5 rounded-2xl shadow-md border-2 border-rose-300 flex flex-col justify-between" id="printable-invoice">
+<div>
+<div class="border-b-2 border-rose-300 pb-3 mb-3 text-center">
+<h2 class="text-xs font-bold uppercase text-slate-700">PAN / VAT Tax Invoice</h2>
+<h1 id="invoice-store-title" class="text-xl font-black text-slate-900 mt-0.5">STORE NAME</h1>
+<p id="invoice-store-address" class="text-[11px] text-slate-600">Address • Nepal</p>
+<p class="text-[10px] text-slate-500 font-semibold mt-0.5">PAN / VAT No: <span id="invoice-store-pan">000000000</span></p>
+</div>
+<div class="grid grid-cols-2 text-[11px] border-b border-rose-200 pb-2 mb-3 text-slate-700">
+<div><p><strong class="text-slate-900">Customer:</strong> <span id="inv-cust-name">Cash / Walk-in Customer</span></p><p id="inv-cust-address">Nepal</p></div>
+<div class="text-right"><p><strong class="text-slate-900">Invoice No:</strong> <span id="inv-no">0001/2082-83</span></p><p><strong class="text-slate-900">Date:</strong> <span id="inv-date">--</span></p><p><strong class="text-slate-900">Mode:</strong> Cash</p></div>
+</div>
+<div class="overflow-x-auto min-h-[160px]">
+<table class="w-full text-left text-[11px] border-collapse">
+<thead><tr class="border-b border-rose-300 text-slate-800"><th class="py-1 px-1">S.No.</th><th class="py-1 px-1">Item Description</th><th class="py-1 px-1">HSN</th><th class="py-1 px-1">Qty</th><th class="py-1 px-1">Size</th><th class="py-1 px-1">Price</th><th class="py-1 px-1">Disc</th><th class="py-1 px-1">VAT</th><th class="py-1 px-1 text-right">Total (NPR)</th><th class="no-print"></th></tr></thead>
+<tbody id="invoice-items-list"></tbody>
+</table>
+</div>
+</div>
+<div class="border-t-2 border-rose-300 pt-3 mt-4">
+<div class="flex justify-between items-center text-sm font-black text-slate-900 mb-2"><span>Total Payable Amount:</span><span id="invoice-grand-total" class="text-rose-600 text-lg">NPR 0.00</span></div>
+<div class="bg-rose-50 p-2 rounded-lg text-[10px] text-slate-700 mb-3 space-y-0.5"><p id="amount-in-words" class="font-bold italic">Zero Rupees Only</p><p id="tax-breakdown-text"></p></div>
+<div class="grid grid-cols-2 text-[10px] text-slate-600 border-t border-rose-200 pt-2 mb-3">
+<div><p class="font-bold text-slate-800">Terms & Conditions:</p><p>1. Goods once sold will not be returned.</p><p>2. Computer generated invoice.</p></div>
+<div class="text-right"><p class="font-bold text-slate-800">Bank: Nabil Bank | A/C: 010000000000</p><p id="invoice-footer-store" class="mt-3 font-bold text-slate-900">For Store Name</p></div>
+</div>
+<div class="flex space-x-2 no-print">
+<button type="button" onclick="window.print()" class="flex-1 bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-slate-900">🖨️ Print Invoice</button>
+<button type="button" id="btn-complete-sale" class="flex-1 bg-rose-600 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-rose-700">💾 Post Bill (Sales + Stock)</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 2. INVENTORY -->
+<div id="panel-inventory" style="display:none" class="space-y-4">
+<div class="card space-y-3 no-print">
+<h3 class="font-bold text-slate-800 text-sm"><span id="p-form-title">Add Product</span></h3>
+<input type="hidden" id="p-edit-id">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+<div class="col-span-2"><label class="lbl">Barcode</label><div class="flex gap-1"><input id="p-barcode" class="inp" placeholder="Scan or type (optional)"><button type="button" onclick="genBarcode()" class="btn px-2 whitespace-nowrap">Generate</button></div></div>
+<div class="col-span-2"><label class="lbl">Product Name</label><input id="p-name" class="inp" placeholder="Designer Kurti"></div>
+<div><label class="lbl">HSN</label><input id="p-hsn" class="inp" placeholder="6204"></div>
+<div><label class="lbl">Size</label><input id="p-size" class="inp" placeholder="L / Free"></div>
+<div><label class="lbl">Cost Price</label><input type="number" id="p-cost" class="inp" placeholder="800"></div>
+<div><label class="lbl">Selling Price</label><input type="number" id="p-price" class="inp" placeholder="1200"></div>
+<div><label class="lbl">VAT %</label><input type="number" id="p-vat" value="13" class="inp"></div>
+<div><label class="lbl">Opening Stock</label><input type="number" id="p-stock" value="0" class="inp"></div>
+<div><label class="lbl">Low-stock Alert At</label><input type="number" id="p-min" value="3" class="inp"></div>
+<div class="flex items-end gap-2 col-span-2"><button type="button" id="btn-save-product" class="btn flex-1">Save Product</button><button type="button" id="btn-cancel-edit" class="btn bg-slate-400 hidden">Cancel</button></div>
+</div>
+</div>
+<div class="card space-y-3">
+<div class="flex flex-wrap justify-between items-center gap-2">
+<h3 class="font-bold text-slate-800 text-sm">🏷️ Stock List</h3>
+<input id="inv-search" oninput="renderInventory()" placeholder="Search name or barcode…" class="inp max-w-xs">
+</div>
+<div id="inv-summary" class="flex flex-wrap gap-2 text-[11px]"></div>
+<div class="overflow-x-auto"><table class="w-full text-xs border-collapse">
+<thead><tr class="bg-slate-100 text-slate-700 uppercase text-[10px]"><th class="th">Barcode</th><th class="th">Product</th><th class="th">Size</th><th class="th text-right">Cost</th><th class="th text-right">Price</th><th class="th text-right">Stock</th><th class="th">Status</th><th class="th no-print"></th></tr></thead>
+<tbody id="inventory-body"></tbody></table></div>
+</div>
+</div>
+
+<!-- 3. SALES BOOK -->
+<div id="panel-sales-book" style="display:none" class="card space-y-4">
+<div class="flex justify-between items-center border-b pb-3"><h3 class="font-bold text-slate-800 text-sm">📑 Sales Invoices Subsidiary Book</h3><span class="tag bg-rose-50 text-rose-600">Auto-Synced with Ledger</span></div>
+<div class="overflow-x-auto"><table class="w-full text-xs border-collapse">
+<thead><tr class="bg-slate-100 text-slate-700 uppercase text-[10px]"><th class="th">Inv #</th><th class="th">Date</th><th class="th">Customer</th><th class="th text-right">Qty</th><th class="th text-right">Taxable</th><th class="th text-right">VAT</th><th class="th text-right">Total (NPR)</th></tr></thead>
+<tbody id="sales-book-body"></tbody></table></div>
+</div>
+
+<!-- 4. SALES ACCOUNT -->
+<div id="panel-sales-account" style="display:none" class="space-y-4">
+<div class="card flex flex-wrap justify-between items-center gap-2">
+<h3 class="font-bold text-slate-800 text-sm">💰 Sales Account — what I sold & profit</h3>
+<select id="sa-period" onchange="renderSalesAccount()" class="inp max-w-[160px]"><option value="all">All time</option><option value="month">This month</option><option value="today">Today</option></select>
+</div>
+<div id="sa-cards" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+<div class="card space-y-2"><h3 class="font-bold text-slate-800 text-xs uppercase">Items Sold (summary)</h3>
+<div class="overflow-x-auto"><table class="w-full text-xs border-collapse">
+<thead><tr class="bg-slate-100 text-slate-700 uppercase text-[10px]"><th class="th">Item</th><th class="th text-right">Qty Sold</th><th class="th text-right">Sales (excl. VAT)</th><th class="th text-right">Cost</th><th class="th text-right">Profit</th></tr></thead>
+<tbody id="sa-items-body"></tbody></table></div></div>
+<div class="card space-y-2"><h3 class="font-bold text-slate-800 text-xs uppercase">Sales Account Register (line by line)</h3>
+<div class="overflow-x-auto max-h-96 overflow-y-auto"><table class="w-full text-xs border-collapse">
+<thead><tr class="bg-slate-100 text-slate-700 uppercase text-[10px] sticky top-0"><th class="th">Date</th><th class="th">Inv #</th><th class="th">Customer</th><th class="th">Item</th><th class="th text-right">Qty</th><th class="th text-right">Rate</th><th class="th text-right">Amount</th></tr></thead>
+<tbody id="sa-lines-body"></tbody></table></div></div>
+</div>
+
+<!-- 5. PURCHASE BOOK -->
+<div id="panel-purchase-book" style="display:none" class="card space-y-6">
+<div class="bg-slate-50 p-4 rounded-xl border space-y-3">
+<h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Record New Supplier Purchase</h3>
+<div class="grid grid-cols-2 lg:grid-cols-6 gap-3">
+<input id="purch-supplier" placeholder="Supplier / Vendor" class="inp">
+<input id="purch-item" placeholder="Item / Material" class="inp">
+<select id="purch-product" class="inp"></select>
+<input type="number" id="purch-qty" placeholder="Qty received" class="inp">
+<input type="number" id="purch-amount" placeholder="Total Cost (NPR)" class="inp">
+<button type="button" id="btn-add-purchase" class="btn">Save Purchase</button>
+</div>
+<p class="text-[10px] text-slate-500">Tip: choose a product + quantity to add the goods to stock automatically (cost price is updated too).</p>
+</div>
+<div>
+<div class="flex justify-between items-center border-b pb-3 mb-3"><h3 class="font-bold text-slate-800 text-sm">📦 Purchase Invoices Subsidiary Book</h3><span class="tag bg-blue-50 text-blue-600">Auto-Synced with Ledger</span></div>
+<div class="overflow-x-auto"><table class="w-full text-xs border-collapse">
+<thead><tr class="bg-slate-100 text-slate-700 uppercase text-[10px]"><th class="th">Ref #</th><th class="th">Date</th><th class="th">Supplier</th><th class="th">Description</th><th class="th text-right">Cost (NPR)</th></tr></thead>
+<tbody id="purchase-book-body"></tbody></table></div>
+</div>
+</div>
+
+<!-- 6. EXPENSES -->
+<div id="panel-expenses" style="display:none" class="space-y-4">
+<div class="card space-y-3">
+<h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Record Expense</h3>
+<div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+<input type="date" id="exp-date" class="inp">
+<select id="exp-cat" class="inp"><option>Rent</option><option>Salary</option><option>Electricity</option><option>Transport</option><option>Marketing</option><option>Maintenance</option><option>Other</option></select>
+<input id="exp-desc" placeholder="Description" class="inp">
+<input type="number" id="exp-amount" placeholder="Amount (NPR)" class="inp">
+<button type="button" id="btn-add-expense" class="btn">Save Expense</button>
+</div>
+</div>
+<div id="exp-summary" class="flex flex-wrap gap-2 text-[11px]"></div>
+<div class="card overflow-x-auto"><table class="w-full text-xs border-collapse">
+<thead><tr class="bg-slate-100 text-slate-700 uppercase text-[10px]"><th class="th">Date</th><th class="th">Category</th><th class="th">Description</th><th class="th text-right">Amount (NPR)</th><th class="th"></th></tr></thead>
+<tbody id="exp-body"></tbody></table></div>
+</div>
+
+<!-- 7. LEDGER -->
+<div id="panel-ledger" style="display:none" class="card space-y-6">
+<div><h3 class="font-bold text-slate-800 text-sm mb-3">📖 Master General Ledger</h3><div id="ledger-list" class="divide-y text-xs max-h-72 overflow-y-auto border rounded-xl p-3 bg-slate-50"></div></div>
+<div><h3 class="font-bold text-slate-800 text-sm mb-3">📝 Automated Double-Entry Journal Entries</h3><div id="journal-list" class="text-xs max-h-72 overflow-y-auto border rounded-xl p-3 bg-slate-50 font-mono"></div></div>
+</div>
+
+<!-- 8. TRIAL BALANCE -->
+<div id="panel-trial" style="display:none" class="card space-y-4">
+<div class="flex justify-between items-center border-b pb-3"><h3 class="font-bold text-slate-800 text-sm">📊 Automated Trial Balance Summary</h3><span class="tag bg-emerald-100 text-emerald-800">Balanced Accounts</span></div>
+<div class="overflow-x-auto"><table class="w-full text-xs border-collapse">
+<thead><tr class="bg-slate-100 text-slate-700 uppercase text-[10px]"><th class="th">Account Head</th><th class="th text-right">Debit (NPR)</th><th class="th text-right">Credit (NPR)</th></tr></thead>
+<tbody id="trial-balance-body"></tbody></table></div>
+</div>
+</main>
+<footer class="bg-white text-center py-3 text-[11px] text-slate-400 border-t no-print"><span id="footer-store-title">Cloud POS & Accounting Suite</span> • Pro Cloud POS</footer>
+</div>
+</div>
+
+<!-- Camera scanner -->
+<div id="cam-modal" style="display:none" class="fixed inset-0 bg-black/80 z-50 items-center justify-center flex-col gap-3 p-4 no-print">
+<video id="cam-video" playsinline muted class="w-full max-w-md rounded-2xl bg-black"></video>
+<p class="text-white text-xs">Point the camera at a barcode…</p>
+<button type="button" onclick="closeCamera()" class="bg-rose-600 text-white px-6 py-2 rounded-xl text-sm font-bold">Close</button>
+</div>
+
+<script>
+const SUPABASE_URL='https://ylmzbyhyguwiipugdxjc.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_uj8pIAiX8r1yvxPzJrBW_w_0RFSFhMz';
+let supabaseClient, currentUserId=null;
+let invoiceItems=[], salesInvoices=[], purchaseInvoices=[], inventory=[], expenses=[], invCounter=0;
+let currentStoreInfo={name:"KOHINOOR FANCY AND LADIES STORE",address:"Birgunj, Nepal",pan:"600000000"};
+try{ if(window.supabase&&typeof window.supabase.createClient==='function') supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(err){alert("Initialization Error: "+err.message);}
+
+const $=id=>document.getElementById(id);
+const fmt=n=>'NPR '+(Number(n)||0).toFixed(2);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const nowStr=()=>new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+' '+new Date().toLocaleDateString();
+const empty=(cols,msg)=>`<tr><td class="td text-slate-400 text-center" colspan="${cols}">${msg}</td></tr>`;
+const calc=i=>{const base=i.price*i.qty-i.disc,tax=base*i.gst/100;return{base,tax,total:base+tax};};
+function inPeriod(ts,p){if(p==='all')return true;const d=new Date(ts),n=new Date();return p==='today'?d.toDateString()===n.toDateString():(d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear());}
+
+/* ---------- Persistence (browser storage, one store per login) ---------- */
+const storageKey=()=>'cloudpos_'+(currentUserId||'guest');
+function saveData(){try{localStorage.setItem(storageKey(),JSON.stringify({inventory,expenses,salesInvoices,purchaseInvoices,invCounter}));}catch(e){alert('Could not save data: '+e.message);}}
+function loadData(){let d={};try{d=JSON.parse(localStorage.getItem(storageKey())||'{}');}catch(e){}
+inventory=d.inventory||[];expenses=d.expenses||[];salesInvoices=d.salesInvoices||[];purchaseInvoices=d.purchaseInvoices||[];invCounter=d.invCounter||salesInvoices.length;}
+
+/* ---------- Branding / navigation ---------- */
+$('inv-date').innerText=new Date().toLocaleDateString();
+function updateStoreBrandingUI(){const s=currentStoreInfo;
+$('sidebar-store-name').innerText=s.name;$('sidebar-store-meta').innerText='PAN: '+s.pan;$('mobile-store-title').innerText=s.name;
+$('invoice-store-title').innerText=s.name;$('invoice-store-address').innerText=s.address;$('invoice-store-pan').innerText=s.pan;
+$('invoice-footer-store').innerText='For '+s.name;$('footer-store-title').innerText=s.name;}
+function showView(v){$('auth-container').style.display=v==='auth'?'flex':'none';$('dashboard-container').style.display=v==='dashboard'?'flex':'none';}
+function toggleAuthForm(f,title){$('login-section').style.display=f==='login'?'block':'none';$('signup-section').style.display=f==='signup'?'block':'none';$('forgot-password-modal').style.display=f==='forgot'?'block':'none';$('form-title').innerText=title;}
+const TABS=['pos','inventory','sales-book','sales-account','purchase-book','expenses','ledger','trial'];
+window.switchTab=function(tab){
+TABS.forEach(t=>{const p=$('panel-'+t),b=$('nav-'+t);
+if(p)p.style.display=t===tab?(t==='pos'?'grid':'block'):'none';
+if(b)b.className='nav'+(t===tab?' !bg-rose-600 !text-white shadow-sm':'');});
+if(tab==='pos')setTimeout(()=>$('barcode-input').focus(),50);};
+window.updateCustomerUI=function(){$('inv-cust-name').innerText=$('cust-name').value.trim()||'Cash / Walk-in Customer';$('inv-cust-address').innerText=$('cust-address').value.trim()||'Nepal';};
+window.quickSelect=function(name,hsn,size,price,disc,gst){$('item-name').value=name;$('item-hsn').value=hsn;$('item-size').value=size;$('item-price').value=price;$('item-disc').value=disc;$('item-gst').value=gst;$('item-qty').value=1;};
+window.handleLogout=async function(){
+if(supabaseClient)await supabaseClient.auth.signOut();
+invoiceItems=[];salesInvoices=[];purchaseInvoices=[];inventory=[];expenses=[];currentUserId=null;
+updateAll();showView('auth');toggleAuthForm('login','Store Portal Login');};
+
+/* ---------- Invoice (POS) ---------- */
+function setScan(msg,ok){const e=$('scan-msg');e.innerText=msg;e.className='text-[11px] min-h-[14px] font-semibold '+(ok?'text-emerald-700':'text-rose-600');}
+function addToInvoice(it){
+if(it.productId){const p=inventory.find(x=>x.id===it.productId);
+const have=invoiceItems.filter(i=>i.productId===it.productId).reduce((a,i)=>a+i.qty,0);
+if(p&&have+it.qty>p.stock){alert(`Only ${p.stock} of "${p.name}" in stock (${have} already on this bill).`);return false;}
+const ex=invoiceItems.find(i=>i.productId===it.productId&&i.price===it.price&&i.gst===it.gst);
+if(ex){ex.qty+=it.qty;ex.disc+=it.disc;updateInvoiceUI();return true;}}
+invoiceItems.push(it);updateInvoiceUI();return true;}
+function handleBarcode(code){code=(code||'').trim();if(!code)return;
+const p=inventory.find(x=>x.barcode===code);
+if(!p)return setScan('✕ Barcode '+code+' is not in inventory',false);
+if(p.stock<=0)return setScan('✕ '+p.name+' is out of stock',false);
+if(addToInvoice({productId:p.id,name:p.name,hsn:p.hsn,size:p.size,qty:1,price:p.price,disc:0,gst:p.vat}))setScan('✓ Added '+p.name,true);}
+let camStream=null,camTimer=null;
+window.openCamera=async function(){
+if(!('BarcodeDetector' in window))return alert('Camera scanning is not supported in this browser (works in Chrome). Use a USB/Bluetooth scanner or type the barcode.');
+try{camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+const v=$('cam-video');v.srcObject=camStream;await v.play();$('cam-modal').style.display='flex';
+const det=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','qr_code']});
+camTimer=setInterval(async()=>{try{const r=await det.detect(v);if(r.length){const c=r[0].rawValue;closeCamera();handleBarcode(c);}}catch(e){}},400);
+}catch(e){alert('Could not open camera: '+e.message);closeCamera();}};
+window.closeCamera=function(){clearInterval(camTimer);if(camStream)camStream.getTracks().forEach(t=>t.stop());camStream=null;$('cam-modal').style.display='none';};
+
+function updateNextInvNo(){$('inv-no').innerText=String(invCounter+1).padStart(4,'0')+'/2082-83';}
+function updateInvoiceUI(){
+const list=$('invoice-items-list');
+if(!invoiceItems.length){list.innerHTML='<tr><td colspan="10" class="text-center py-6 text-slate-400 italic">No invoice items added yet. Scan a barcode or use the form on the left.</td></tr>';
+$('invoice-grand-total').innerText='NPR 0.00';$('amount-in-words').innerText='Zero Rupees Only';$('tax-breakdown-text').innerText='Tax Summary: Taxable Amount = NPR 0.00 | VAT (13%) = NPR 0.00';return;}
+let h='',g=0,tb=0,tt=0;
+invoiceItems.forEach((it,i)=>{const c=calc(it);g+=c.total;tb+=c.base;tt+=c.tax;
+h+=`<tr class="border-b border-rose-100"><td class="py-1 px-1">${i+1}</td><td class="py-1 px-1 font-semibold">${esc(it.name)}${it.productId?'':' <span class="no-print text-[9px] text-amber-600">(no stock link)</span>'}</td><td class="py-1 px-1">${esc(it.hsn)}</td><td class="py-1 px-1">${it.qty}</td><td class="py-1 px-1">${esc(it.size)}</td><td class="py-1 px-1">NPR ${it.price.toFixed(2)}</td><td class="py-1 px-1">NPR ${it.disc.toFixed(2)}</td><td class="py-1 px-1">${it.gst}%</td><td class="py-1 px-1 text-right font-bold">NPR ${c.total.toFixed(2)}</td><td class="no-print text-right"><button onclick="removeItem(${i})" class="text-rose-600 font-bold px-1">✕</button></td></tr>`;});
+list.innerHTML=h;$('invoice-grand-total').innerText=fmt(g);$('amount-in-words').innerText='Total Amount: '+fmt(g);
+$('tax-breakdown-text').innerText=`Tax Summary: Taxable Amount = ${fmt(tb)} | VAT (13%) = ${fmt(tt)}`;}
+window.removeItem=i=>{invoiceItems.splice(i,1);updateInvoiceUI();};
+
+/* ---------- Inventory ---------- */
+function stockStatus(p){return p.stock<=0?['Out','bg-rose-100 text-rose-700']:p.stock<=p.min?['Low','bg-amber-100 text-amber-700']:['OK','bg-emerald-100 text-emerald-700'];}
+window.genBarcode=()=>{let c;do{c='200'+String(Math.floor(Math.random()*1e9)).padStart(9,'0');}while(inventory.some(p=>p.barcode===c));$('p-barcode').value=c;};
+function resetProductForm(){['p-edit-id','p-barcode','p-name','p-hsn','p-size','p-cost','p-price'].forEach(i=>$(i).value='');
+$('p-vat').value=13;$('p-stock').value=0;$('p-min').value=3;$('p-form-title').innerText='Add Product';$('btn-save-product').innerText='Save Product';$('btn-cancel-edit').classList.add('hidden');}
+window.editProduct=id=>{const p=inventory.find(x=>x.id===id);if(!p)return;
+$('p-edit-id').value=id;$('p-barcode').value=p.barcode;$('p-name').value=p.name;$('p-hsn').value=p.hsn;$('p-size').value=p.size;$('p-cost').value=p.cost;$('p-price').value=p.price;$('p-vat').value=p.vat;$('p-stock').value=p.stock;$('p-min').value=p.min;
+$('p-form-title').innerText='Edit Product';$('btn-save-product').innerText='Update Product';$('btn-cancel-edit').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});};
+window.adjustStock=id=>{const p=inventory.find(x=>x.id===id);if(!p)return;
+const v=prompt(`Adjust stock for "${p.name}" (current ${p.stock}).\nEnter +10 to add or -2 to remove:`);if(v===null)return;
+const n=parseInt(v);if(isNaN(n))return alert('Enter a number like +10 or -2');
+if(p.stock+n<0)return alert('Stock cannot go below zero.');p.stock+=n;saveData();updateAll();};
+window.deleteProduct=id=>{const p=inventory.find(x=>x.id===id);if(p&&confirm(`Delete "${p.name}" from inventory? Past sales are kept.`)){inventory=inventory.filter(x=>x.id!==id);saveData();updateAll();}};
+function renderInventory(){
+const q=($('inv-search').value||'').toLowerCase().trim();
+const rows=inventory.filter(p=>!q||p.name.toLowerCase().includes(q)||(p.barcode||'').includes(q));
+const low=inventory.filter(p=>p.stock<=p.min).length;
+const badge=$('low-badge');badge.innerText=low;badge.classList.toggle('hidden',!low);
+const units=inventory.reduce((a,p)=>a+p.stock,0),val=inventory.reduce((a,p)=>a+p.stock*p.cost,0);
+$('inv-summary').innerHTML=`<span class="tag bg-slate-100">${inventory.length} products</span><span class="tag bg-slate-100">${units} units</span><span class="tag bg-slate-100">Stock value (cost): ${fmt(val)}</span><span class="tag ${low?'bg-amber-100 text-amber-700':'bg-emerald-100 text-emerald-700'}">${low} low / out of stock</span>`;
+$('inventory-body').innerHTML=rows.length?rows.map(p=>{const[s,c]=stockStatus(p);
+return `<tr class="hover:bg-slate-50"><td class="td font-mono">${esc(p.barcode)||'-'}</td><td class="td font-semibold">${esc(p.name)}</td><td class="td">${esc(p.size)}</td><td class="td text-right">${p.cost.toFixed(2)}</td><td class="td text-right">${p.price.toFixed(2)}</td><td class="td text-right font-bold">${p.stock}</td><td class="td"><span class="tag ${c}">${s}</span></td><td class="td no-print whitespace-nowrap"><button onclick="adjustStock('${p.id}')" class="text-blue-600 font-bold mr-2">±Stock</button><button onclick="editProduct('${p.id}')" class="text-slate-600 font-bold mr-2">Edit</button><button onclick="deleteProduct('${p.id}')" class="text-rose-600 font-bold">✕</button></td></tr>`;}).join(''):empty(8,'No products yet. Add your first product above.');}
+function refreshProductLists(){
+$('inv-datalist').innerHTML=inventory.map(p=>`<option value="${esc(p.name)}">`).join('');
+const sel=$('purch-product'),cur=sel.value;
+sel.innerHTML='<option value="">Not a stock item</option>'+inventory.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');sel.value=cur;}
+
+/* ---------- Expenses ---------- */
+function renderExpenses(){
+const sorted=[...expenses].sort((a,b)=>b.ts.localeCompare(a.ts));
+$('exp-body').innerHTML=sorted.length?sorted.map(e=>`<tr class="hover:bg-slate-50"><td class="td">${esc(e.date)}</td><td class="td"><span class="tag bg-slate-100">${esc(e.category)}</span></td><td class="td">${esc(e.desc)}</td><td class="td text-right font-bold text-rose-600">${fmt(e.amount)}</td><td class="td text-center"><button onclick="deleteExpense('${e.id}')" class="text-rose-600 font-bold">✕</button></td></tr>`).join(''):empty(5,'No expenses recorded yet.');
+const mo=expenses.filter(e=>inPeriod(e.ts,'month')).reduce((a,e)=>a+e.amount,0),all=expenses.reduce((a,e)=>a+e.amount,0);
+const cat={};expenses.forEach(e=>cat[e.category]=(cat[e.category]||0)+e.amount);
+$('exp-summary').innerHTML=`<span class="tag bg-rose-100 text-rose-700">This month: ${fmt(mo)}</span><span class="tag bg-slate-200">All time: ${fmt(all)}</span>`+Object.entries(cat).map(([k,v])=>`<span class="tag bg-white border">${esc(k)}: ${fmt(v)}</span>`).join('');}
+window.deleteExpense=id=>{if(confirm('Delete this expense?')){expenses=expenses.filter(e=>e.id!==id);saveData();updateAll();}};
+
+/* ---------- Sales Account ---------- */
+function renderSalesAccount(){
+const per=$('sa-period').value,inv=salesInvoices.filter(s=>inPeriod(s.ts,per)),ex=expenses.filter(e=>inPeriod(e.ts,per));
+const lines=[];inv.forEach(s=>(s.lines||[]).forEach(l=>lines.push({...l,invNo:s.invNo,customer:s.customer,date:s.date})));
+const sales=inv.reduce((a,s)=>a+s.subtotal,0),vat=inv.reduce((a,s)=>a+s.tax,0),billed=inv.reduce((a,s)=>a+s.total,0);
+const cogs=lines.reduce((a,l)=>a+l.cost*l.qty,0),exp=ex.reduce((a,e)=>a+e.amount,0),gross=sales-cogs,net=gross-exp;
+const card=(t,v,c='text-slate-900')=>`<div class="card !p-4"><p class="text-[10px] font-bold uppercase text-slate-400">${t}</p><p class="text-base font-black ${c} mt-1">${fmt(v)}</p></div>`;
+$('sa-cards').innerHTML=card('Sales (excl. VAT)',sales,'text-emerald-600')+card('VAT Collected',vat)+card('Total Billed',billed)+card('Cost of Goods Sold',cogs,'text-rose-600')+card('Gross Profit',gross,gross>=0?'text-emerald-600':'text-rose-600')+card('Expenses',exp,'text-rose-600')+card('Net Profit',net,net>=0?'text-emerald-600':'text-rose-600')+`<div class="card !p-4"><p class="text-[10px] font-bold uppercase text-slate-400">Invoices</p><p class="text-base font-black mt-1">${inv.length}</p></div>`;
+const g={};lines.forEach(l=>{const k=l.productId||l.name,r=g[k]||(g[k]={name:l.name,qty:0,rev:0,cost:0});r.qty+=l.qty;r.rev+=l.base;r.cost+=l.cost*l.qty;});
+const items=Object.values(g).sort((a,b)=>b.rev-a.rev);
+$('sa-items-body').innerHTML=items.length?items.map(r=>`<tr class="hover:bg-slate-50"><td class="td font-semibold">${esc(r.name)}</td><td class="td text-right">${r.qty}</td><td class="td text-right">${fmt(r.rev)}</td><td class="td text-right">${fmt(r.cost)}</td><td class="td text-right font-bold ${r.rev-r.cost>=0?'text-emerald-600':'text-rose-600'}">${fmt(r.rev-r.cost)}</td></tr>`).join(''):empty(5,'No sales in this period.');
+$('sa-lines-body').innerHTML=lines.length?lines.slice(0,300).map(l=>`<tr class="hover:bg-slate-50"><td class="td text-slate-500">${esc(l.date)}</td><td class="td font-bold text-rose-600">#${esc(l.invNo)}</td><td class="td">${esc(l.customer)}</td><td class="td font-semibold">${esc(l.name)}</td><td class="td text-right">${l.qty}</td><td class="td text-right">${l.price.toFixed(2)}</td><td class="td text-right font-bold">${fmt(l.base)}</td></tr>`).join(''):empty(7,'No sales in this period.');}
+
+/* ---------- Books, Ledger, Journal, Trial Balance ---------- */
+function updateAccountingAndBooks(){
+$('sales-book-body').innerHTML=salesInvoices.length?salesInvoices.map(s=>`<tr class="hover:bg-slate-50"><td class="td font-bold text-rose-600">#${esc(s.invNo)}</td><td class="td text-slate-500">${esc(s.date)}</td><td class="td font-semibold">${esc(s.customer)}</td><td class="td text-right">${s.itemsCount}</td><td class="td text-right">${fmt(s.subtotal)}</td><td class="td text-right">${fmt(s.tax)}</td><td class="td text-right font-bold text-emerald-600">${fmt(s.total)}</td></tr>`).join(''):empty(7,'No sales invoices recorded yet.');
+$('purchase-book-body').innerHTML=purchaseInvoices.length?purchaseInvoices.map(p=>`<tr class="hover:bg-slate-50"><td class="td font-bold text-blue-600">#${esc(p.refNo)}</td><td class="td text-slate-500">${esc(p.date)}</td><td class="td font-semibold">${esc(p.supplier)}</td><td class="td">${esc(p.item)}${p.qty?` <span class="text-slate-400">(+${p.qty} to stock)</span>`:''}</td><td class="td text-right font-bold text-rose-600">${fmt(p.amount)}</td></tr>`).join(''):empty(5,'No purchase invoices recorded yet.');
+if(!salesInvoices.length&&!purchaseInvoices.length&&!expenses.length){
+$('ledger-list').innerHTML='<div class="text-center py-6 text-slate-400">No transactions posted yet.</div>';
+$('journal-list').innerHTML='<div class="text-center py-6 text-slate-400 font-sans">No journal entries generated yet.</div>';
+$('trial-balance-body').innerHTML=empty(3,'No financial data to compute trial balance yet.');return;}
+const E=[];let rev=0,vat=0,cashIn=0,pur=0,exp=0;
+salesInvoices.forEach(s=>{rev+=s.subtotal;vat+=s.tax;cashIn+=s.total;E.push({ts:s.ts,
+l:`<div class="py-2 flex justify-between border-b"><div><strong>Sale Inv #${esc(s.invNo)}</strong> <span class="text-slate-400">(${esc(s.customer)})</span></div><span class="font-bold text-emerald-600">+${fmt(s.total)}</span></div>`,
+j:`<div class="p-2 mb-2 bg-white rounded border shadow-sm"><p class="text-[10px] text-slate-400 font-sans">${esc(s.date)} - Sales Ref: #${esc(s.invNo)}</p><p class="text-rose-700 font-bold">Dr. Cash / Bank A/c ........ ${fmt(s.total)}</p><p class="pl-4">Cr. Sales Revenue A/c ..... ${fmt(s.subtotal)}</p><p class="pl-4">Cr. Output VAT Payable .... ${fmt(s.tax)}</p></div>`});});
+purchaseInvoices.forEach(p=>{pur+=p.amount;E.push({ts:p.ts||'',
+l:`<div class="py-2 flex justify-between border-b"><div><strong>Purchase Ref #${esc(p.refNo)}</strong> <span class="text-slate-400">(${esc(p.supplier)})</span></div><span class="font-bold text-rose-600">-${fmt(p.amount)}</span></div>`,
+j:`<div class="p-2 mb-2 bg-white rounded border shadow-sm"><p class="text-[10px] text-slate-400 font-sans">${esc(p.date)} - Purchase Ref: #${esc(p.refNo)}</p><p class="text-blue-700 font-bold">Dr. Purchases / Stock A/c ... ${fmt(p.amount)}</p><p class="pl-4">Cr. Cash / Bank A/c ........ ${fmt(p.amount)}</p></div>`});});
+expenses.forEach(e=>{exp+=e.amount;E.push({ts:e.ts,
+l:`<div class="py-2 flex justify-between border-b"><div><strong>Expense: ${esc(e.category)}</strong> <span class="text-slate-400">(${esc(e.desc)})</span></div><span class="font-bold text-rose-600">-${fmt(e.amount)}</span></div>`,
+j:`<div class="p-2 mb-2 bg-white rounded border shadow-sm"><p class="text-[10px] text-slate-400 font-sans">${esc(e.date)} - Expense</p><p class="text-amber-700 font-bold">Dr. ${esc(e.category)} Expense A/c ... ${fmt(e.amount)}</p><p class="pl-4">Cr. Cash / Bank A/c ........ ${fmt(e.amount)}</p></div>`});});
+E.sort((a,b)=>b.ts.localeCompare(a.ts));
+$('ledger-list').innerHTML=E.map(x=>x.l).join('');$('journal-list').innerHTML=E.map(x=>x.j).join('');
+const cash=cashIn-pur-exp,dr=cash+pur+exp,cr=rev+vat;
+const row=(n,d,c)=>`<tr><td class="td font-semibold">${n}</td><td class="td text-right font-bold">${d===null?'-':fmt(d)}</td><td class="td text-right font-bold">${c===null?'-':fmt(c)}</td></tr>`;
+$('trial-balance-body').innerHTML=row('Cash in Hand / Bank A/c (Net Asset)',cash,null)+row('Purchases / Stock A/c',pur,null)+row('Operating Expenses A/c',exp,null)+row('Sales Revenue A/c (Income)',null,rev)+row('Output VAT Payable (Liability)',null,vat)
++`<tr class="bg-slate-50 font-black"><td class="td">TOTAL TRIAL BALANCE</td><td class="td text-right text-emerald-600">${fmt(dr)}</td><td class="td text-right text-emerald-600">${fmt(cr)}</td></tr>`;}
+
+function updateAll(){updateAccountingAndBooks();renderInventory();renderExpenses();renderSalesAccount();refreshProductLists();updateNextInvNo();updateInvoiceUI();}
+
+/* ---------- Events ---------- */
+document.addEventListener('DOMContentLoaded',()=>{
+$('exp-date').value=new Date().toISOString().slice(0,10);
+$('link-goto-signup').onclick=e=>{e.preventDefault();toggleAuthForm('signup','Create Store Account');};
+$('link-goto-forgot').onclick=e=>{e.preventDefault();toggleAuthForm('forgot','Recover Password');};
+$('link-goto-login1').onclick=e=>{e.preventDefault();toggleAuthForm('login','Store Portal Login');};
+$('link-goto-login2').onclick=e=>{e.preventDefault();toggleAuthForm('login','Store Portal Login');};
+TABS.forEach(t=>$('nav-'+t).addEventListener('click',()=>switchTab(t)));
+switchTab('pos');
+
+$('btn-login').onclick=async()=>{
+const email=$('login-email').value,password=$('login-password').value;
+if(!email||!password)return alert("Please fill in email and password.");
+if(!supabaseClient)return alert("Supabase client not initialized.");
+const{data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+if(error)return alert("Login Error: "+error.message);
+$('user-email-display-sidebar').innerText=data.user.email;
+const m=data.user.user_metadata;
+if(m&&m.store_name)currentStoreInfo={name:m.store_name,address:m.store_address,pan:m.store_pan};
+currentUserId=data.user.id;loadData();updateStoreBrandingUI();updateAll();showView('dashboard');};
+
+$('btn-signup').onclick=async()=>{
+const storeName=$('store-name').value.trim(),storeAddress=$('store-address').value.trim(),storePan=$('store-pan').value.trim(),email=$('signup-email').value,password=$('signup-password').value;
+if(!storeName||!storeAddress||!storePan||!email||!password||password.length<6)return alert("Please fill in all store details and password (min 6 chars).");
+if(!supabaseClient)return alert("Supabase client not initialized.");
+const{data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{store_name:storeName,store_address:storeAddress,store_pan:storePan}}});
+if(error)alert("Sign Up Error: "+error.message);
+else if(data.user&&data.user.identities&&data.user.identities.length===0){alert("An account with this email already exists! Please log in instead.");toggleAuthForm('login','Store Portal Login');}
+else{currentStoreInfo={name:storeName,address:storeAddress,pan:storePan};updateStoreBrandingUI();alert("Store account created successfully! You can now log in.");toggleAuthForm('login','Store Portal Login');}};
+
+$('btn-reset').onclick=async()=>{
+const email=$('reset-email').value;if(!email)return alert("Please enter your email.");
+const{error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
+if(error)alert("Error: "+error.message);else{alert("Password recovery email sent!");toggleAuthForm('login','Store Portal Login');}};
+
+// Barcode: USB/Bluetooth scanners type the code then press Enter
+$('barcode-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();handleBarcode(e.target.value);e.target.value='';e.target.focus();}});
+
+// Auto-fill when an inventory product name is chosen
+$('item-name').addEventListener('change',()=>{
+const p=inventory.find(x=>x.name.toLowerCase()===$('item-name').value.trim().toLowerCase());
+if(p){$('item-hsn').value=p.hsn;$('item-size').value=p.size;$('item-price').value=p.price;$('item-gst').value=p.vat;}});
+
+$('btn-add-item').onclick=()=>{
+const name=$('item-name').value.trim(),hsn=$('item-hsn').value.trim()||'6204',size=$('item-size').value.trim()||'Free';
+const qty=parseInt($('item-qty').value)||1,price=parseFloat($('item-price').value)||0,disc=parseFloat($('item-disc').value)||0,gst=parseFloat($('item-gst').value)||13;
+if(!name||price<=0)return alert("Please enter a valid item name and price.");
+const p=inventory.find(x=>x.name.toLowerCase()===name.toLowerCase());
+if(!addToInvoice({productId:p?p.id:null,name,hsn,size,qty,price,disc,gst}))return;
+$('item-name').value='';$('item-price').value='';$('item-disc').value='0';$('item-qty').value=1;};
+
+$('btn-complete-sale').onclick=()=>{
+if(!invoiceItems.length)return alert("Invoice is empty!");
+const need={};invoiceItems.forEach(i=>{if(i.productId)need[i.productId]=(need[i.productId]||0)+i.qty;});
+for(const id in need){const p=inventory.find(x=>x.id===id);
+if(!p)return alert("A product on this bill was deleted from inventory. Remove that line and add it again.");
+if(p.stock<need[id])return alert(`Not enough stock for "${p.name}": need ${need[id]}, have ${p.stock}.`);}
+let subtotal=0,tax=0,count=0;
+const lines=invoiceItems.map(i=>{const c=calc(i),p=i.productId&&inventory.find(x=>x.id===i.productId);
+subtotal+=c.base;tax+=c.tax;count+=i.qty;
+return{productId:i.productId,name:i.name,hsn:i.hsn,size:i.size,qty:i.qty,price:i.price,disc:i.disc,gst:i.gst,base:c.base,tax:c.tax,total:c.total,cost:p?p.cost:0};});
+for(const id in need){inventory.find(x=>x.id===id).stock-=need[id];}
+invCounter++;
+const invNo=String(invCounter).padStart(4,'0')+'/2082-83';
+salesInvoices.unshift({id:uid(),invNo,customer:$('cust-name').value.trim()||'Cash / Walk-in Customer',address:$('cust-address').value.trim(),itemsCount:count,subtotal,tax,total:subtotal+tax,ts:new Date().toISOString(),date:nowStr(),lines});
+saveData();
+invoiceItems=[];$('cust-name').value='';$('cust-address').value='';updateCustomerUI();updateAll();
+alert("Bill posted: Sales Book, Sales Account, Ledger updated and stock deducted.");switchTab('sales-account');};
+
+$('btn-save-product').onclick=()=>{
+const id=$('p-edit-id').value,barcode=$('p-barcode').value.trim(),name=$('p-name').value.trim();
+const f=i=>parseFloat($(i).value)||0;
+const d={barcode,name,hsn:$('p-hsn').value.trim()||'6204',size:$('p-size').value.trim()||'Free',cost:f('p-cost'),price:f('p-price'),vat:f('p-vat'),stock:parseInt($('p-stock').value)||0,min:parseInt($('p-min').value)||0};
+if(!name||d.price<=0)return alert("Enter a product name and selling price.");
+if(d.stock<0)return alert("Stock cannot be negative.");
+if(barcode&&inventory.some(p=>p.barcode===barcode&&p.id!==id))return alert("Another product already uses this barcode.");
+if(id){Object.assign(inventory.find(p=>p.id===id),d);}else inventory.push({id:uid(),...d});
+saveData();resetProductForm();updateAll();};
+$('btn-cancel-edit').onclick=resetProductForm;
+
+$('btn-add-purchase').onclick=()=>{
+const supplier=$('purch-supplier').value.trim(),pid=$('purch-product').value,p=inventory.find(x=>x.id===pid);
+const item=$('purch-item').value.trim()||(p?p.name:''),amount=parseFloat($('purch-amount').value)||0,qty=parseInt($('purch-qty').value)||0;
+if(!supplier||!item||amount<=0)return alert("Please enter supplier, item (or pick a product) and amount.");
+if(p&&qty<=0)return alert("Enter the quantity received to add it to stock.");
+if(p){p.stock+=qty;p.cost=amount/qty;}
+purchaseInvoices.unshift({refNo:'PUR-'+uid().toUpperCase().slice(-5),supplier,item,amount,qty:p?qty:0,productId:p?p.id:null,ts:new Date().toISOString(),date:new Date().toLocaleDateString()});
+['purch-supplier','purch-item','purch-amount','purch-qty'].forEach(i=>$(i).value='');$('purch-product').value='';
+saveData();updateAll();alert("Purchase recorded"+(p?` and ${qty} added to stock.`:"."));};
+
+$('btn-add-expense').onclick=()=>{
+const date=$('exp-date').value,amount=parseFloat($('exp-amount').value)||0,desc=$('exp-desc').value.trim();
+if(!date||amount<=0||!desc)return alert("Enter date, description and a valid amount.");
+expenses.push({id:uid(),date,ts:new Date(date+'T12:00:00').toISOString(),category:$('exp-cat').value,desc,amount});
+$('exp-desc').value='';$('exp-amount').value='';saveData();updateAll();};
+updateAll();
+});
+</script>
 </body>
 </html>
- 
