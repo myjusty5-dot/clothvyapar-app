@@ -21,109 +21,109 @@
     <div id="auth-container" class="flex items-center justify-center min-h-screen p-4">
         <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border border-slate-100">
             <div class="text-center mb-6">
-                <div class="inline-block p-3 bg-blue-50 text-blue-600 rounded-2xl mb-2 shadow-inner">
+                <div class="inline-block p-3 bg-rose-50 text-rose-600 rounded-2xl mb-2 shadow-inner">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
                 </div>
                 <h1 class="text-xl font-black text-slate-900 tracking-tight">Cloud POS Portal</h1>
-                <p class="text-xs text-slate-400 mt-1">Multi-Store Billing & Automated Accounting</p>
+                <p class="text-xs text-slate-400 mt-1">Smart Cloud Accounting & Subsidiary Suite</p>
             </div>
             
-            <h2 id="form-title" class="text-sm font-bold mb-4 text-slate-700 text-center uppercase tracking-wider">Account Sign In</h2>
+            <h2 id="form-title" class="text-sm font-bold mb-4 text-slate-700 text-center uppercase tracking-wider">Store Portal Login</h2>
 
             <!-- Login Form -->
             <div id="login-section">
                 <div class="mb-4">
                     <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Email Address</label>
-                    <input type="email" id="login-email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition" placeholder="store@example.com" required />
+                    <input type="email" id="login-email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 transition" placeholder="store@example.com" required />
                 </div>
                 <div class="mb-5">
                     <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Password</label>
-                    <input type="password" id="login-password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition" placeholder="••••••••" required />
+                    <input type="password" id="login-password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 transition" placeholder="••••••••" required />
                 </div>
                 <button type="button" id="btn-login" class="w-full bg-slate-900 text-white py-3.5 rounded-2xl hover:bg-slate-800 transition font-bold shadow-lg shadow-slate-900/10 text-sm mb-4">Sign In</button>
                 <div class="flex justify-between text-xs font-medium">
-                    <a href="#" id="link-goto-signup" class="text-blue-600 hover:underline">Register New Store</a>
+                    <a href="#" id="link-goto-signup" class="text-rose-600 hover:underline">Create Store Account</a>
                     <a href="#" id="link-goto-forgot" class="text-slate-400 hover:underline">Forgot Password?</a>
                 </div>
             </div>
 
-            <!-- Sign Up Form -->
+            <!-- Sign Up Form (With Store Details) -->
             <div id="signup-section" style="display: none;" class="mt-2 space-y-3">
                 <div>
                     <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Store / Shop Name</label>
-                    <input type="text" id="store-name" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. My Fancy Store" required />
+                    <input type="text" id="store-name" value="KOHINOOR FANCY AND LADIES STORE" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" required />
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Store Address</label>
-                        <input type="text" id="store-address" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="City, Country" required />
+                        <input type="text" id="store-address" value="Birgunj, Nepal" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" required />
                     </div>
                     <div>
                         <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">PAN / VAT Number</label>
-                        <input type="text" id="store-pan" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="600000000" required />
+                        <input type="text" id="store-pan" value="600000000" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" required />
                     </div>
                 </div>
                 <div>
                     <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Email Address</label>
-                    <input type="email" id="signup-email" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="store@example.com" required />
+                    <input type="email" id="signup-email" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" placeholder="store@example.com" required />
                 </div>
                 <div>
                     <label class="block text-slate-600 text-[11px] font-bold uppercase mb-1">Password (Min 6 Chars)</label>
-                    <input type="password" id="signup-password" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="••••••••" required />
+                    <input type="password" id="signup-password" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" placeholder="••••••••" required />
                 </div>
-                <button type="button" id="btn-signup" class="w-full bg-blue-600 text-white py-3 rounded-2xl hover:bg-blue-700 transition font-bold shadow-lg text-sm mb-2">Register Store</button>
+                <button type="button" id="btn-signup" class="w-full bg-rose-600 text-white py-3 rounded-2xl hover:bg-rose-700 transition font-bold shadow-lg text-sm mb-2">Register Store</button>
                 <div class="text-center">
-                    <a href="#" id="link-goto-login1" class="text-xs text-blue-600 font-medium hover:underline">← Back to Login</a>
+                    <a href="#" id="link-goto-login1" class="text-xs text-rose-600 font-medium hover:underline">← Back to Login</a>
                 </div>
             </div>
 
             <!-- Forgot Password Modal -->
             <div id="forgot-password-modal" style="display: none;" class="mt-2">
-                <p class="text-xs text-slate-500 mb-4">Enter your registered email to receive a recovery link.</p>
-                <input type="email" id="reset-email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="store@example.com" />
-                <button type="button" id="btn-reset" class="w-full bg-blue-600 text-white py-3.5 rounded-2xl font-bold text-sm hover:bg-blue-700 mb-4 shadow-md">Send Recovery Link</button>
+                <p class="text-xs text-slate-500 mb-4">Enter your registered email to receive a password recovery link.</p>
+                <input type="email" id="reset-email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-rose-500" placeholder="store@example.com" />
+                <button type="button" id="btn-reset" class="w-full bg-rose-600 text-white py-3.5 rounded-2xl font-bold text-sm hover:bg-rose-700 mb-4 shadow-md">Send Recovery Link</button>
                 <div class="text-center">
-                    <a href="#" id="link-goto-login2" class="text-xs text-blue-600 font-medium hover:underline">← Back to Login</a>
+                    <a href="#" id="link-goto-login2" class="text-xs text-rose-600 font-medium hover:underline">← Back to Login</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- DASHBOARD CONTAINER -->
+    <!-- DASHBOARD CONTAINER (Pro Left Sidebar Layout) -->
     <div id="dashboard-container" style="display: none;" class="flex min-h-screen w-full bg-slate-100">
         
-        <!-- Permanent Left Sidebar -->
+        <!-- Permanent Left Sidebar Column -->
         <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between shrink-0 no-print shadow-2xl min-h-screen">
             <div>
-                <!-- Brand Header & Top Sign Out Button -->
-                <div class="p-5 border-b border-slate-800">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="bg-blue-600 text-white font-black text-[10px] uppercase px-2 py-0.5 rounded">NP VAT 13%</span>
-                        <button type="button" id="btn-logout-top" class="bg-rose-500/20 text-rose-300 hover:bg-rose-600 hover:text-white text-[10px] px-2.5 py-1 rounded-lg font-bold transition">Sign Out</button>
+                <!-- Brand Header in Sidebar -->
+                <div class="p-5 border-b border-slate-800 flex justify-between items-start">
+                    <div>
+                        <span class="bg-rose-600 text-white font-black text-[10px] uppercase px-2 py-0.5 rounded">NP VAT 13%</span>
+                        <h2 id="sidebar-store-name" class="font-black text-white text-sm mt-2 tracking-wide truncate max-w-[130px]">STORE PORTAL</h2>
+                        <p id="sidebar-store-meta" class="text-[11px] text-slate-400 truncate">PAN: --</p>
                     </div>
-                    <h2 id="sidebar-store-name" class="font-black text-white text-sm tracking-wide truncate">Store Portal</h2>
-                    <p id="sidebar-store-meta" class="text-[11px] text-slate-400 truncate">PAN: --</p>
+                    <button type="button" onclick="handleLogout()" class="bg-rose-500/20 text-rose-400 hover:bg-rose-600 hover:text-white px-2 py-1 rounded text-[10px] font-bold transition">Sign Out</button>
                 </div>
 
                 <!-- Sidebar Navigation Links -->
                 <nav class="p-3 space-y-1.5 text-xs font-semibold">
-                    <button type="button" id="nav-pos" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition bg-blue-600 text-white shadow-sm text-left">
+                    <button type="button" id="nav-pos" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition bg-rose-600 text-white shadow-sm text-left">
                         <span>📄</span>
                         <span>Tax Invoice POS</span>
                     </button>
-                    <button type="button" id="nav-sales" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left">
-                        <span>🛒</span>
-                        <span>Sales Invoices</span>
+                    <button type="button" id="nav-sales-book" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left">
+                        <span>📑</span>
+                        <span>Sales Invoices Book</span>
                     </button>
-                    <button type="button" id="nav-purchase" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left">
+                    <button type="button" id="nav-purchase-book" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left">
                         <span>📦</span>
-                        <span>Purchase Invoices</span>
+                        <span>Purchase Invoices Book</span>
                     </button>
                     <button type="button" id="nav-ledger" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left">
                         <span>📖</span>
-                        <span>Subsidiary & Journals</span>
+                        <span>General Ledger & Journals</span>
                     </button>
                     <button type="button" id="nav-trial" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left">
                         <span>📊</span>
@@ -132,13 +132,10 @@
                 </nav>
             </div>
 
-            <!-- User Info & Bottom Sign Out Button -->
-            <div class="p-4 border-t border-slate-800 bg-slate-950/40 space-y-2">
-                <p id="user-email-display-sidebar" class="text-[11px] text-slate-400 truncate"></p>
-                <button type="button" id="btn-logout" class="w-full bg-rose-600 text-white text-xs py-3 rounded-xl hover:bg-rose-700 transition font-bold shadow-md flex items-center justify-center space-x-2">
-                    <span>🚪</span>
-                    <span>Sign Out</span>
-                </button>
+            <!-- User Info & Logout at Bottom of Sidebar -->
+            <div class="p-4 border-t border-slate-800 bg-slate-950/40">
+                <p id="user-email-display-sidebar" class="text-[11px] text-slate-400 truncate mb-3"></p>
+                <button type="button" onclick="handleLogout()" class="w-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs py-2.5 rounded-xl hover:bg-rose-500 hover:text-white transition font-bold">Secure Sign Out</button>
             </div>
         </aside>
 
@@ -146,8 +143,14 @@
         <div class="flex-grow flex flex-col justify-between overflow-x-hidden">
             <!-- Mobile Top Header Bar -->
             <header class="bg-slate-900 text-white shadow-md px-4 py-3 flex justify-between items-center md:hidden no-print">
-                <span class="font-bold text-xs">POS Portal</span>
-                <button type="button" id="btn-logout-mobile" class="bg-rose-600 text-white text-xs px-3 py-1.5 rounded-lg font-bold">Sign Out</button>
+                <span id="mobile-store-title" class="font-bold text-xs">Cloud POS</span>
+                <div class="flex space-x-1">
+                    <button onclick="switchTab('pos')" class="bg-rose-600 text-[10px] px-2 py-1 rounded">POS</button>
+                    <button onclick="switchTab('sales-book')" class="bg-slate-800 text-[10px] px-2 py-1 rounded">Sales</button>
+                    <button onclick="switchTab('purchase-book')" class="bg-slate-800 text-[10px] px-2 py-1 rounded">Purchase</button>
+                    <button onclick="switchTab('ledger')" class="bg-slate-800 text-[10px] px-2 py-1 rounded">Ledger</button>
+                    <button onclick="handleLogout()" class="bg-rose-500 text-[10px] px-2 py-1 rounded font-bold">Exit</button>
+                </div>
             </header>
 
             <!-- Workspace Panel -->
@@ -159,39 +162,43 @@
                     <div class="md:col-span-1 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 h-fit space-y-3 no-print">
                         <h3 class="font-bold text-slate-800 text-sm flex items-center justify-between">
                             <span>Invoice Line Item</span>
-                            <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-semibold">Nepal VAT (13%)</span>
+                            <span class="text-[10px] bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full font-semibold">Nepal VAT (13%)</span>
                         </h3>
 
-                        <!-- Customer Info Inputs -->
-                        <div class="border-b pb-3 space-y-2">
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase">Customer Details</label>
-                            <input type="text" id="cust-name" placeholder="Customer Name" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none" />
-                            <input type="text" id="cust-address" placeholder="Customer Address" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                        <!-- Customer Details Input -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                            <p class="text-[10px] font-bold text-slate-500 uppercase">Customer Information</p>
+                            <div>
+                                <input type="text" id="cust-name" placeholder="Customer Name (e.g. Ram Shrestha)" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white" oninput="updateCustomerUI()" />
+                            </div>
+                            <div>
+                                <input type="text" id="cust-address" placeholder="Customer Address / Phone" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white" oninput="updateCustomerUI()" />
+                            </div>
                         </div>
 
                         <!-- Quick Presets -->
                         <div>
                             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Quick Select Category</label>
                             <div class="flex flex-wrap gap-1">
-                                <button type="button" onclick="quickSelect('Designer Kurti', '6204', 'L', 1200, 50, 13)" class="text-[10px] bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Kurti</button>
-                                <button type="button" onclick="quickSelect('Silk Saree', '5407', 'Free', 2500, 100, 13)" class="text-[10px] bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Saree</button>
-                                <button type="button" onclick="quickSelect('Lehenga Set', '6204', 'M', 4500, 200, 13)" class="text-[10px] bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Lehenga</button>
-                                <button type="button" onclick="quickSelect('Cosmetics Kit', '3304', 'Std', 800, 0, 13)" class="text-[10px] bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Cosmetics</button>
+                                <button type="button" onclick="quickSelect('Designer Kurti', '6204', 'L', 1200, 50, 13)" class="text-[10px] bg-slate-100 hover:bg-rose-50 hover:text-rose-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Kurti</button>
+                                <button type="button" onclick="quickSelect('Silk Saree', '5407', 'Free', 2500, 100, 13)" class="text-[10px] bg-slate-100 hover:bg-rose-50 hover:text-rose-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Saree</button>
+                                <button type="button" onclick="quickSelect('Lehenga Set', '6204', 'M', 4500, 200, 13)" class="text-[10px] bg-slate-100 hover:bg-rose-50 hover:text-rose-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Lehenga</button>
+                                <button type="button" onclick="quickSelect('Cosmetics Kit', '3304', 'Std', 800, 0, 13)" class="text-[10px] bg-slate-100 hover:bg-rose-50 hover:text-rose-600 px-2 py-1 rounded-lg border border-slate-200 font-medium transition">Cosmetics</button>
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Item Name</label>
-                            <input type="text" id="item-name" placeholder="e.g. Designer Kurti" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                            <input type="text" id="item-name" placeholder="e.g. Designer Kurti" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none" />
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">HSN Code</label>
-                                <input type="text" id="item-hsn" placeholder="6204" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                                <input type="text" id="item-hsn" placeholder="6204" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none" />
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Size</label>
-                                <input type="text" id="item-size" placeholder="L / M / Free" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                                <input type="text" id="item-size" placeholder="L / M / Free" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none" />
                             </div>
                         </div>
                         <div class="grid grid-cols-3 gap-2">
@@ -210,16 +217,16 @@
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">VAT %</label>
-                            <input type="number" id="item-gst" value="13" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                            <input type="number" id="item-gst" value="13" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none" />
                         </div>
                         <button type="button" id="btn-add-item" class="w-full bg-slate-900 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800 transition shadow-sm">+ Add Line to Invoice</button>
                     </div>
 
-                    <!-- Live Tax Invoice Preview -->
-                    <div class="md:col-span-2 bg-amber-50/60 p-5 rounded-2xl shadow-md border-2 border-amber-300 flex flex-col justify-between" id="printable-invoice">
+                    <!-- Live Tax Invoice Preview (Dynamic Store & Customer Info) -->
+                    <div class="md:col-span-2 bg-amber-50/60 p-5 rounded-2xl shadow-md border-2 border-rose-300 flex flex-col justify-between" id="printable-invoice">
                         <div>
                             <!-- Invoice Header -->
-                            <div class="border-b-2 border-amber-300 pb-3 mb-3 text-center">
+                            <div class="border-b-2 border-rose-300 pb-3 mb-3 text-center">
                                 <h2 class="text-xs font-bold uppercase text-slate-700">PAN / VAT Tax Invoice</h2>
                                 <h1 id="invoice-store-title" class="text-xl font-black text-slate-900 tracking-wide mt-0.5">STORE NAME</h1>
                                 <p id="invoice-store-address" class="text-[11px] text-slate-600">Address &bull; Nepal</p>
@@ -227,10 +234,10 @@
                             </div>
 
                             <!-- Bill Meta Details -->
-                            <div class="grid grid-cols-2 text-[11px] border-b border-amber-200 pb-2 mb-3 text-slate-700">
+                            <div class="grid grid-cols-2 text-[11px] border-b border-rose-200 pb-2 mb-3 text-slate-700">
                                 <div>
-                                    <p><strong class="text-slate-900">Customer:</strong> <span id="invoice-cust-name">Walk-in Customer</span></p>
-                                    <p><strong class="text-slate-900">Address:</strong> <span id="invoice-cust-address">Nepal</span></p>
+                                    <p><strong class="text-slate-900">Customer:</strong> <span id="inv-cust-name">Cash / Walk-in Customer</span></p>
+                                    <p id="inv-cust-address">Nepal</p>
                                 </div>
                                 <div class="text-right">
                                     <p><strong class="text-slate-900">Invoice No:</strong> <span id="inv-no">0001/2082-83</span></p>
@@ -243,7 +250,7 @@
                             <div class="overflow-x-auto min-h-[160px]">
                                 <table class="w-full text-left text-[11px] border-collapse">
                                     <thead>
-                                        <tr class="border-b border-amber-300 text-slate-800">
+                                        <tr class="border-b border-rose-300 text-slate-800">
                                             <th class="py-1 px-1">S.No.</th>
                                             <th class="py-1 px-1">Item Description</th>
                                             <th class="py-1 px-1">HSN</th>
@@ -256,7 +263,7 @@
                                             <th class="no-print"></th>
                                         </tr>
                                     </thead>
-                                    <tbody id="invoice-items-list" class="divide-y divide-amber-100">
+                                    <tbody id="invoice-items-list" class="divide-y divide-rose-100">
                                         <tr>
                                             <td colspan="10" class="text-center py-6 text-slate-400 italic">No invoice items added yet. Use form on left.</td>
                                         </tr>
@@ -266,16 +273,16 @@
                         </div>
 
                         <!-- Totals & Footer -->
-                        <div class="border-t-2 border-amber-300 pt-3 mt-4">
+                        <div class="border-t-2 border-rose-300 pt-3 mt-4">
                             <div class="flex justify-between items-center text-sm font-black text-slate-900 mb-2">
                                 <span>Total Payable Amount:</span>
-                                <span id="invoice-grand-total" class="text-blue-600 text-lg">NPR 0.00</span>
+                                <span id="invoice-grand-total" class="text-rose-600 text-lg">NPR 0.00</span>
                             </div>
-                            <div class="bg-amber-100/50 p-2 rounded-lg text-[10px] text-slate-700 mb-3 space-y-0.5">
+                            <div class="bg-rose-50 p-2 rounded-lg text-[10px] text-slate-700 mb-3 space-y-0.5">
                                 <p id="amount-in-words" class="font-bold italic">Zero Rupees Only</p>
                                 <p id="tax-breakdown-text">Tax Summary: Taxable Amount = NPR 0.00 | VAT (13%) = NPR 0.00</p>
                             </div>
-                            <div class="grid grid-cols-2 text-[10px] text-slate-600 border-t border-amber-200 pt-2 mb-3">
+                            <div class="grid grid-cols-2 text-[10px] text-slate-600 border-t border-rose-200 pt-2 mb-3">
                                 <div>
                                     <p class="font-bold text-slate-800">Terms & Conditions:</p>
                                     <p>1. Goods once sold will not be returned.</p>
@@ -288,88 +295,83 @@
                             </div>
                             <div class="flex space-x-2 no-print">
                                 <button type="button" onclick="window.print()" class="flex-1 bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-slate-900 transition shadow">🖨️ Print Invoice</button>
-                                <button type="button" id="btn-complete-sale" class="flex-1 bg-blue-600 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-blue-700 transition shadow">💾 Post to Accounts</button>
+                                <button type="button" id="btn-complete-sale" class="flex-1 bg-rose-600 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-rose-700 transition shadow">💾 Post to Sales Book</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. SALES INVOICES TAB -->
-                <div id="panel-sales" style="display: none;" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <!-- 2. SALES INVOICES BOOK TAB -->
+                <div id="panel-sales-book" style="display: none;" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                     <div class="flex justify-between items-center border-b pb-3">
-                        <h3 class="font-bold text-slate-800 text-sm">🛒 Sales Invoices Subsidiary Book <span class="text-[10px] text-blue-600 font-normal ml-2">(Click customer name to view bill history)</span></h3>
-                        <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">Auto-Synced</span>
+                        <h3 class="font-bold text-slate-800 text-sm">📑 Sales Invoices Subsidiary Book</h3>
+                        <span class="text-xs bg-rose-50 text-rose-600 px-2.5 py-1 rounded-full font-bold">Auto-Synced with Ledger</span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-xs text-left border-collapse">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-700 uppercase text-[10px]">
-                                    <th class="p-2.5 border">Inv No</th>
+                                    <th class="p-2.5 border">Inv #</th>
                                     <th class="p-2.5 border">Date</th>
                                     <th class="p-2.5 border">Customer Name</th>
+                                    <th class="p-2.5 border text-right">Items Count</th>
                                     <th class="p-2.5 border text-right">Taxable (NPR)</th>
-                                    <th class="p-2.5 border text-right">VAT 13% (NPR)</th>
-                                    <th class="p-2.5 border text-right">Total (NPR)</th>
+                                    <th class="p-2.5 border text-right">VAT (13%)</th>
+                                    <th class="p-2.5 border text-right font-bold">Total (NPR)</th>
                                 </tr>
                             </thead>
-                            <tbody id="sales-subsidiary-body" class="divide-y">
+                            <tbody id="sales-book-body" class="divide-y">
                                 <tr>
-                                    <td class="p-4 text-center text-slate-400" colspan="6">No sales invoices recorded yet. Complete a sale from POS.</td>
+                                    <td class="p-2.5 border text-slate-400 text-center" colspan="7">No sales invoices recorded yet.</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- 3. PURCHASE INVOICES TAB -->
-                <div id="panel-purchase" style="display: none;" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
-                    <div class="flex justify-between items-center border-b pb-3">
-                        <h3 class="font-bold text-slate-800 text-sm">📦 Purchase Invoices Subsidiary Book</h3>
-                        <span class="text-xs bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-bold">Inventory Purchasing</span>
-                    </div>
-                    
+                <!-- 3. PURCHASE INVOICES BOOK TAB -->
+                <div id="panel-purchase-book" style="display: none;" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
                     <!-- Add Purchase Form -->
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 grid grid-cols-1 sm:grid-cols-4 gap-3">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Supplier Name</label>
-                            <input type="text" id="purch-supplier" placeholder="Supplier / Vendor" class="w-full px-3 py-2 border rounded-xl text-xs bg-white" />
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Bill / Inv No</label>
-                            <input type="text" id="purch-inv" placeholder="PINV-001" class="w-full px-3 py-2 border rounded-xl text-xs bg-white" />
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Amount (NPR)</label>
-                            <input type="number" id="purch-amount" placeholder="0.00" class="w-full px-3 py-2 border rounded-xl text-xs bg-white" />
-                        </div>
-                        <div class="flex items-end">
-                            <button type="button" id="btn-add-purchase" class="w-full bg-emerald-600 text-white py-2 rounded-xl text-xs font-bold hover:bg-emerald-700 transition">Record Purchase</button>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                        <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Record New Supplier Purchase Invoice</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                            <input type="text" id="purch-supplier" placeholder="Supplier / Vendor Name" class="px-3 py-2 border rounded-xl text-xs bg-white" />
+                            <input type="text" id="purch-item" placeholder="Item / Material Bought" class="px-3 py-2 border rounded-xl text-xs bg-white" />
+                            <input type="number" id="purch-amount" placeholder="Total Cost (NPR)" class="px-3 py-2 border rounded-xl text-xs bg-white" />
+                            <button type="button" id="btn-add-purchase" class="bg-slate-900 text-white py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition">Save Purchase</button>
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-100 text-slate-700 uppercase text-[10px]">
-                                    <th class="p-2.5 border">Bill No</th>
-                                    <th class="p-2.5 border">Date</th>
-                                    <th class="p-2.5 border">Supplier Name</th>
-                                    <th class="p-2.5 border text-right">Purchase Amount (NPR)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="purchase-subsidiary-body" class="divide-y">
-                                <tr>
-                                    <td class="p-4 text-center text-slate-400" colspan="4">No purchase invoices recorded yet.</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div>
+                        <div class="flex justify-between items-center border-b pb-3 mb-3">
+                            <h3 class="font-bold text-slate-800 text-sm">📦 Purchase Invoices Subsidiary Book</h3>
+                            <span class="text-xs bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full font-bold">Auto-Synced with Ledger</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-700 uppercase text-[10px]">
+                                        <th class="p-2.5 border">Ref #</th>
+                                        <th class="p-2.5 border">Date</th>
+                                        <th class="p-2.5 border">Supplier / Vendor</th>
+                                        <th class="p-2.5 border">Description</th>
+                                        <th class="p-2.5 border text-right font-bold">Cost (NPR)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="purchase-book-body" class="divide-y">
+                                    <tr>
+                                        <td class="p-2.5 border text-slate-400 text-center" colspan="5">No purchase invoices recorded yet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 4. LEDGER & JOURNAL TAB -->
+                <!-- 4. GENERAL LEDGER & JOURNALS TAB -->
                 <div id="panel-ledger" style="display: none;" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
                     <div>
-                        <h3 class="font-bold text-slate-800 text-sm mb-3">📖 Transaction Ledger</h3>
+                        <h3 class="font-bold text-slate-800 text-sm mb-3">📖 Master General Ledger</h3>
                         <div id="ledger-list" class="divide-y text-xs max-h-56 overflow-y-auto border rounded-xl p-3 bg-slate-50">
                             <div class="text-center py-6 text-slate-400">No transactions posted yet.</div>
                         </div>
@@ -409,58 +411,8 @@
 
             <!-- Footer -->
             <footer class="bg-white text-center py-3 text-[11px] text-slate-400 border-t no-print">
-                <span id="footer-store-title">Cloud POS Portal</span> &bull; Pro Cloud POS & Accounting
+                <span id="footer-store-title">Cloud POS & Accounting Suite</span> &bull; Pro Cloud POS
             </footer>
-        </div>
-    </div>
-
-    <!-- CUSTOMER DETAILS & BILL HISTORY MODAL -->
-    <div id="customer-modal" style="display: none;" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-200 animate-in fade-in zoom-in duration-200">
-            <div class="bg-slate-900 text-white p-5 flex justify-between items-center">
-                <div>
-                    <span class="bg-blue-600 text-white font-black text-[9px] uppercase px-2 py-0.5 rounded">Customer Profile</span>
-                    <h3 id="modal-cust-name" class="font-black text-lg mt-1">Customer Name</h3>
-                    <p id="modal-cust-address" class="text-xs text-slate-400">Address: --</p>
-                </div>
-                <button type="button" onclick="closeCustomerModal()" class="bg-slate-800 hover:bg-rose-600 text-white w-8 h-8 rounded-full font-bold transition flex items-center justify-center">✕</button>
-            </div>
-            <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-blue-50 border border-blue-100 p-3.5 rounded-2xl">
-                        <p class="text-[10px] font-bold text-blue-600 uppercase">Total Invoices</p>
-                        <p id="modal-cust-inv-count" class="text-xl font-black text-slate-900 mt-0.5">0</p>
-                    </div>
-                    <div class="bg-emerald-50 border border-emerald-100 p-3.5 rounded-2xl">
-                        <p class="text-[10px] font-bold text-emerald-600 uppercase">Total Purchase Amount</p>
-                        <p id="modal-cust-total-spent" class="text-xl font-black text-emerald-700 mt-0.5">NPR 0.00</p>
-                    </div>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wide mb-2">Detailed Bill History</h4>
-                    <div class="border rounded-2xl overflow-hidden">
-                        <table class="w-full text-xs text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-100 text-slate-700 uppercase text-[10px]">
-                                    <th class="p-2.5 border">Invoice #</th>
-                                    <th class="p-2.5 border">Date</th>
-                                    <th class="p-2.5 border text-right">Items Count</th>
-                                    <th class="p-2.5 border text-right">Total Bill (NPR)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="modal-cust-bills-list" class="divide-y">
-                                <tr>
-                                    <td colspan="4" class="p-4 text-center text-slate-400">No bills found.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-slate-50 px-6 py-3.5 border-t flex justify-end">
-                <button type="button" onclick="closeCustomerModal()" class="bg-slate-900 text-white text-xs font-bold px-5 py-2.5 rounded-xl hover:bg-slate-800 transition">Close Window</button>
-            </div>
         </div>
     </div>
 
@@ -471,12 +423,11 @@
 
         let supabaseClient;
         let invoiceItems = [];
-        let salesSubsidiary = [];
-        let purchaseSubsidiary = [];
-
+        let salesInvoices = [];
+        let purchaseInvoices = [];
         let currentStoreInfo = {
-            name: "MY FANCY STORE",
-            address: "Birgunj",
+            name: "KOHINOOR FANCY AND LADIES STORE",
+            address: "Birgunj, Nepal",
             pan: "600000000"
         };
 
@@ -490,21 +441,22 @@
 
         document.getElementById('inv-date').innerText = new Date().toLocaleDateString();
 
-        document.getElementById('cust-name').addEventListener('input', (e) => {
-            document.getElementById('invoice-cust-name').innerText = e.target.value || 'Walk-in Customer';
-        });
-        document.getElementById('cust-address').addEventListener('input', (e) => {
-            document.getElementById('invoice-cust-address').innerText = e.target.value || 'Nepal';
-        });
-
         function updateStoreBrandingUI() {
             document.getElementById('sidebar-store-name').innerText = currentStoreInfo.name;
             document.getElementById('sidebar-store-meta').innerText = 'PAN: ' + currentStoreInfo.pan;
+            document.getElementById('mobile-store-title').innerText = currentStoreInfo.name;
             document.getElementById('invoice-store-title').innerText = currentStoreInfo.name;
-            document.getElementById('invoice-store-address').innerText = currentStoreInfo.address + ' &bull; Nepal';
+            document.getElementById('invoice-store-address').innerText = currentStoreInfo.address;
             document.getElementById('invoice-store-pan').innerText = currentStoreInfo.pan;
             document.getElementById('invoice-footer-store').innerText = 'For ' + currentStoreInfo.name;
             document.getElementById('footer-store-title').innerText = currentStoreInfo.name;
+        }
+
+        window.updateCustomerUI = function() {
+            const name = document.getElementById('cust-name').value.trim();
+            const addr = document.getElementById('cust-address').value.trim();
+            document.getElementById('inv-cust-name').innerText = name || 'Cash / Walk-in Customer';
+            document.getElementById('inv-cust-address').innerText = addr || 'Nepal';
         }
 
         window.quickSelect = function(name, hsn, size, price, disc, gst) {
@@ -530,17 +482,27 @@
         }
 
         window.switchTab = function(tabName) {
-            const tabs = ['pos', 'sales', 'purchase', 'ledger', 'trial'];
+            const tabs = ['pos', 'sales-book', 'purchase-book', 'ledger', 'trial'];
             tabs.forEach(t => {
                 const panel = document.getElementById('panel-' + t);
-                const nav = document.getElementById('nav-' + t);
-                if (panel) panel.style.display = (t === tabName) ? (t === 'pos' ? 'grid' : 'block') : 'none';
-                if (nav) {
-                    nav.className = (t === tabName) 
-                        ? 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition bg-blue-600 text-white shadow-sm text-left font-bold' 
+                const btn = document.getElementById('nav-' + t);
+                if (panel) panel.style.display = t === tabName ? (t === 'pos' ? 'grid' : 'block') : 'none';
+                if (btn) {
+                    btn.className = t === tabName 
+                        ? 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition bg-rose-600 text-white shadow-sm text-left' 
                         : 'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition hover:bg-slate-800 text-slate-300 text-left';
                 }
             });
+        }
+
+        window.handleLogout = async function() {
+            if (supabaseClient) await supabaseClient.auth.signOut();
+            invoiceItems = [];
+            salesInvoices = [];
+            purchaseInvoices = [];
+            updateInvoiceUI();
+            showView('auth');
+            toggleAuthForm('login', 'Store Portal Login');
         }
 
         function updateInvoiceUI() {
@@ -571,7 +533,7 @@
                 totalTaxable += baseAmount;
                 totalTax += taxAmount;
 
-                html += `<tr class="border-b border-amber-100">
+                html += `<tr class="border-b border-rose-100">
                     <td class="py-1 px-1">${index + 1}</td>
                     <td class="py-1 px-1 font-semibold">${item.name}</td>
                     <td class="py-1 px-1">${item.hsn}</td>
@@ -596,92 +558,51 @@
             updateInvoiceUI();
         }
 
-        // Open Customer Profile & Bill History Modal when clicking a customer name
-        window.viewCustomerDetails = function(customerName) {
-            const customerBills = salesSubsidiary.filter(s => s.customer.toLowerCase() === customerName.toLowerCase());
-            const custAddress = customerBills.length > 0 ? customerBills[0].address : 'Nepal';
-
-            document.getElementById('modal-cust-name').innerText = customerName;
-            document.getElementById('modal-cust-address').innerText = 'Address: ' + custAddress;
-            document.getElementById('modal-cust-inv-count').innerText = customerBills.length;
-
-            let totalSpent = 0;
-            let bHtml = '';
-
-            if (customerBills.length === 0) {
-                bHtml = '<tr><td colspan="4" class="p-4 text-center text-slate-400">No bills recorded for this customer.</td></tr>';
-            } else {
-                customerBills.forEach(b => {
-                    totalSpent += b.total;
-                    bHtml += `<tr class="border-b">
-                        <td class="p-2.5 border font-bold">#${b.invNo}</td>
-                        <td class="p-2.5 border text-slate-500">${b.date}</td>
-                        <td class="p-2.5 border text-right">${b.itemsCount} items</td>
-                        <td class="p-2.5 border text-right font-bold text-blue-600">NPR ${b.total.toFixed(2)}</td>
-                    </tr>`;
-                });
-            }
-
-            document.getElementById('modal-cust-total-spent').innerText = 'NPR ' + totalSpent.toFixed(2);
-            document.getElementById('modal-cust-bills-list').innerHTML = bHtml;
-            document.getElementById('customer-modal').style.display = 'flex';
-        }
-
-        window.closeCustomerModal = function() {
-            document.getElementById('customer-modal').style.display = 'none';
-        }
-
         function updateAccountingAndBooks() {
-            const salesBody = document.getElementById('sales-subsidiary-body');
-            if (salesSubsidiary.length === 0) {
-                salesBody.innerHTML = '<tr><td class="p-4 text-center text-slate-400" colspan="6">No sales invoices recorded yet.</td></tr>';
-            } else {
-                let sHtml = '';
-                salesSubsidiary.forEach(s => {
-                    sHtml += `<tr class="border-b hover:bg-slate-50 transition">
-                        <td class="p-2.5 border font-bold">#${s.invNo}</td>
-                        <td class="p-2.5 border text-slate-500">${s.date}</td>
-                        <td class="p-2.5 border">
-                            <button type="button" onclick="viewCustomerDetails('${s.customer}')" class="font-bold text-blue-600 hover:text-blue-800 hover:underline text-left">
-                                ${s.customer} 🔍
-                            </button>
-                        </td>
-                        <td class="p-2.5 border text-right">NPR ${s.subtotal.toFixed(2)}</td>
-                        <td class="p-2.5 border text-right">NPR ${s.tax.toFixed(2)}</td>
-                        <td class="p-2.5 border text-right font-bold text-blue-600">NPR ${s.total.toFixed(2)}</td>
-                    </tr>`;
-                });
-                salesBody.innerHTML = sHtml;
-            }
-
-            const purchBody = document.getElementById('purchase-subsidiary-body');
-            if (purchaseSubsidiary.length === 0) {
-                purchBody.innerHTML = '<tr><td class="p-4 text-center text-slate-400" colspan="4">No purchase invoices recorded yet.</td></tr>';
-            } else {
-                let pHtml = '';
-                purchaseSubsidiary.forEach(p => {
-                    pHtml += `<tr class="border-b">
-                        <td class="p-2.5 border font-bold">#${p.invNo}</td>
-                        <td class="p-2.5 border text-slate-500">${p.date}</td>
-                        <td class="p-2.5 border font-semibold">${p.supplier}</td>
-                        <td class="p-2.5 border text-right font-bold text-emerald-600">NPR ${p.amount.toFixed(2)}</td>
-                    </tr>`;
-                });
-                purchBody.innerHTML = pHtml;
-            }
-
+            const salesBookBody = document.getElementById('sales-book-body');
+            const purchaseBookBody = document.getElementById('purchase-book-body');
             const ledgerList = document.getElementById('ledger-list');
             const journalList = document.getElementById('journal-list');
             const trialBody = document.getElementById('trial-balance-body');
 
-            let totalSalesRev = salesSubsidiary.reduce((sum, s) => sum + s.subtotal, 0);
-            let totalVATCollected = salesSubsidiary.reduce((sum, s) => sum + s.tax, 0);
-            let totalCashIn = salesSubsidiary.reduce((sum, s) => sum + s.total, 0);
+            // 1. Sales Book UI
+            if (salesInvoices.length === 0) {
+                salesBookBody.innerHTML = '<tr><td class="p-2.5 border text-slate-400 text-center" colspan="7">No sales invoices recorded yet.</td></tr>';
+            } else {
+                let html = '';
+                salesInvoices.forEach(s => {
+                    html += `<tr class="hover:bg-slate-50">
+                        <td class="p-2.5 border font-bold text-rose-600">#${s.invNo}</td>
+                        <td class="p-2.5 border text-slate-500">${s.date}</td>
+                        <td class="p-2.5 border font-semibold">${s.customer}</td>
+                        <td class="p-2.5 border text-right">${s.itemsCount}</td>
+                        <td class="p-2.5 border text-right">NPR ${s.subtotal.toFixed(2)}</td>
+                        <td class="p-2.5 border text-right">NPR ${s.tax.toFixed(2)}</td>
+                        <td class="p-2.5 border text-right font-bold text-emerald-600">NPR ${s.total.toFixed(2)}</td>
+                    </tr>`;
+                });
+                salesBookBody.innerHTML = html;
+            }
 
-            let totalPurchases = purchaseSubsidiary.reduce((sum, p) => sum + p.amount, 0);
-            let netCashInHand = totalCashIn - totalPurchases;
+            // 2. Purchase Book UI
+            if (purchaseInvoices.length === 0) {
+                purchaseBookBody.innerHTML = '<tr><td class="p-2.5 border text-slate-400 text-center" colspan="5">No purchase invoices recorded yet.</td></tr>';
+            } else {
+                let html = '';
+                purchaseInvoices.forEach(p => {
+                    html += `<tr class="hover:bg-slate-50">
+                        <td class="p-2.5 border font-bold text-blue-600">#${p.refNo}</td>
+                        <td class="p-2.5 border text-slate-500">${p.date}</td>
+                        <td class="p-2.5 border font-semibold">${p.supplier}</td>
+                        <td class="p-2.5 border text-slate-600">${p.item}</td>
+                        <td class="p-2.5 border text-right font-bold text-rose-600">NPR ${p.amount.toFixed(2)}</td>
+                    </tr>`;
+                });
+                purchaseBookBody.innerHTML = html;
+            }
 
-            if (salesSubsidiary.length === 0 && purchaseSubsidiary.length === 0) {
+            // 3. Ledger & Journals & Trial Balance
+            if (salesInvoices.length === 0 && purchaseInvoices.length === 0) {
                 ledgerList.innerHTML = '<div class="text-center py-6 text-slate-400">No transactions posted yet.</div>';
                 journalList.innerHTML = '<div class="text-center py-6 text-slate-400 font-sans">No journal entries generated yet.</div>';
                 trialBody.innerHTML = '<tr><td class="p-2.5 border text-slate-400" colspan="3">No financial data to compute trial balance yet.</td></tr>';
@@ -690,28 +611,40 @@
 
             let ledgerHtml = '';
             let journalHtml = '';
+            let totalSalesRev = 0;
+            let totalVAT = 0;
+            let totalCashIn = 0;
+            let totalPurchases = 0;
+            let totalCashOut = 0;
 
-            salesSubsidiary.forEach(s => {
+            salesInvoices.forEach(s => {
                 ledgerHtml += `<div class="py-2 flex justify-between items-center border-b">
-                    <div><strong>Sales Inv #${s.invNo}</strong> <span class="text-slate-400">(${s.customer})</span></div>
-                    <span class="font-bold text-blue-600">+NPR ${s.total.toFixed(2)}</span>
+                    <div><strong>Sale Inv #${s.invNo}</strong> <span class="text-slate-400">(${s.customer})</span></div>
+                    <span class="font-bold text-emerald-600">+NPR ${s.total.toFixed(2)}</span>
                 </div>`;
+                totalSalesRev += s.subtotal;
+                totalVAT += s.tax;
+                totalCashIn += s.total;
+
                 journalHtml += `<div class="p-2 mb-2 bg-white rounded border shadow-sm">
-                    <p class="text-[10px] text-slate-400 font-sans">${s.date} - Ref: Sales Inv #${s.invNo}</p>
-                    <p class="text-blue-700 font-bold">Dr. Cash / Bank A/c ................................ NPR ${s.total.toFixed(2)}</p>
+                    <p class="text-[10px] text-slate-400 font-sans">${s.date} - Sales Ref: #${s.invNo}</p>
+                    <p class="text-rose-700 font-bold">Dr. Cash / Bank A/c ................................ NPR ${s.total.toFixed(2)}</p>
                     <p class="pl-4 text-slate-700">Cr. Sales Revenue A/c .......................... NPR ${s.subtotal.toFixed(2)}</p>
                     <p class="pl-4 text-slate-700">Cr. Output VAT Payable A/c ................ NPR ${s.tax.toFixed(2)}</p>
                 </div>`;
             });
 
-            purchaseSubsidiary.forEach(p => {
+            purchaseInvoices.forEach(p => {
                 ledgerHtml += `<div class="py-2 flex justify-between items-center border-b">
-                    <div><strong>Purchase Bill #${p.invNo}</strong> <span class="text-slate-400">(${p.supplier})</span></div>
+                    <div><strong>Purchase Ref #${p.refNo}</strong> <span class="text-slate-400">(${p.supplier})</span></div>
                     <span class="font-bold text-rose-600">-NPR ${p.amount.toFixed(2)}</span>
                 </div>`;
+                totalPurchases += p.amount;
+                totalCashOut += p.amount;
+
                 journalHtml += `<div class="p-2 mb-2 bg-white rounded border shadow-sm">
-                    <p class="text-[10px] text-slate-400 font-sans">${p.date} - Ref: Purchase Bill #${p.invNo}</p>
-                    <p class="text-emerald-700 font-bold">Dr. Purchases / Inventory A/c .......... NPR ${p.amount.toFixed(2)}</p>
+                    <p class="text-[10px] text-slate-400 font-sans">${p.date} - Purchase Ref: #${p.refNo}</p>
+                    <p class="text-blue-700 font-bold">Dr. Purchases / Stock A/c .................... NPR ${p.amount.toFixed(2)}</p>
                     <p class="pl-4 text-slate-700">Cr. Cash / Bank A/c ................................ NPR ${p.amount.toFixed(2)}</p>
                 </div>`;
             });
@@ -719,17 +652,18 @@
             ledgerList.innerHTML = ledgerHtml;
             journalList.innerHTML = journalHtml;
 
-            let totalDebit = netCashInHand + totalPurchases;
-            let totalCredit = totalSalesRev + totalVATCollected;
+            let netCash = totalCashIn - totalCashOut;
+            let totalDebit = netCash + totalPurchases;
+            let totalCredit = totalSalesRev + totalVAT;
 
             trialBody.innerHTML = `
                 <tr>
-                    <td class="p-2.5 border font-semibold">Cash in Hand / Bank A/c (Asset)</td>
-                    <td class="p-2.5 border text-right font-bold text-slate-800">NPR ${netCashInHand.toFixed(2)}</td>
+                    <td class="p-2.5 border font-semibold">Cash in Hand / Bank A/c (Net Asset)</td>
+                    <td class="p-2.5 border text-right font-bold text-slate-800">NPR ${netCash.toFixed(2)}</td>
                     <td class="p-2.5 border text-right">-</td>
                 </tr>
                 <tr>
-                    <td class="p-2.5 border font-semibold">Purchases / Inventory A/c (Expense)</td>
+                    <td class="p-2.5 border font-semibold">Purchases / Stock A/c (Expense)</td>
                     <td class="p-2.5 border text-right font-bold text-slate-800">NPR ${totalPurchases.toFixed(2)}</td>
                     <td class="p-2.5 border text-right">-</td>
                 </tr>
@@ -741,39 +675,27 @@
                 <tr>
                     <td class="p-2.5 border font-semibold">Output VAT Payable (Liability)</td>
                     <td class="p-2.5 border text-right">-</td>
-                    <td class="p-2.5 border text-right font-bold text-slate-800">NPR ${totalVATCollected.toFixed(2)}</td>
+                    <td class="p-2.5 border text-right font-bold text-slate-800">NPR ${totalVAT.toFixed(2)}</td>
                 </tr>
                 <tr class="bg-slate-50 font-black">
                     <td class="p-2.5 border">TOTAL TRIAL BALANCE</td>
-                    <td class="p-2.5 border text-right text-blue-600">NPR ${totalDebit.toFixed(2)}</td>
-                    <td class="p-2.5 border text-right text-blue-600">NPR ${totalCredit.toFixed(2)}</td>
+                    <td class="p-2.5 border text-right text-emerald-600">NPR ${totalDebit.toFixed(2)}</td>
+                    <td class="p-2.5 border text-right text-emerald-600">NPR ${totalCredit.toFixed(2)}</td>
                 </tr>
             `;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('link-goto-signup').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('signup', 'Register New Store'); });
+            document.getElementById('link-goto-signup').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('signup', 'Create Store Account'); });
             document.getElementById('link-goto-forgot').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('forgot', 'Recover Password'); });
-            document.getElementById('link-goto-login1').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Account Sign In'); });
-            document.getElementById('link-goto-login2').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Account Sign In'); });
+            document.getElementById('link-goto-login1').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Store Portal Login'); });
+            document.getElementById('link-goto-login2').addEventListener('click', (e) => { e.preventDefault(); toggleAuthForm('login', 'Store Portal Login'); });
 
             document.getElementById('nav-pos').addEventListener('click', () => switchTab('pos'));
-            document.getElementById('nav-sales').addEventListener('click', () => switchTab('sales'));
-            document.getElementById('nav-purchase').addEventListener('click', () => switchTab('purchase'));
+            document.getElementById('nav-sales-book').addEventListener('click', () => switchTab('sales-book'));
+            document.getElementById('nav-purchase-book').addEventListener('click', () => switchTab('purchase-book'));
             document.getElementById('nav-ledger').addEventListener('click', () => switchTab('ledger'));
             document.getElementById('nav-trial').addEventListener('click', () => switchTab('trial'));
-
-            const handleLogout = async () => {
-                if (supabaseClient) await supabaseClient.auth.signOut();
-                invoiceItems = [];
-                updateInvoiceUI();
-                showView('auth');
-                toggleAuthForm('login', 'Account Sign In');
-            };
-
-            document.getElementById('btn-logout').addEventListener('click', handleLogout);
-            document.getElementById('btn-logout-top').addEventListener('click', handleLogout);
-            document.getElementById('btn-logout-mobile').addEventListener('click', handleLogout);
 
             document.getElementById('btn-login').addEventListener('click', async () => {
                 const email = document.getElementById('login-email').value;
@@ -822,12 +744,12 @@
                     alert("Sign Up Error: " + error.message);
                 } else if (data.user && data.user.identities && data.user.identities.length === 0) {
                     alert("An account with this email already exists! Please log in instead.");
-                    toggleAuthForm('login', 'Account Sign In');
+                    toggleAuthForm('login', 'Store Portal Login');
                 } else {
                     currentStoreInfo = { name: storeName, address: storeAddress, pan: storePan };
                     updateStoreBrandingUI();
                     alert("Store account created successfully! You can now log in.");
-                    toggleAuthForm('login', 'Account Sign In');
+                    toggleAuthForm('login', 'Store Portal Login');
                 }
             });
 
@@ -838,7 +760,7 @@
                 if (error) alert("Error: " + error.message);
                 else {
                     alert("Password recovery email sent!");
-                    toggleAuthForm('login', 'Account Sign In');
+                    toggleAuthForm('login', 'Store Portal Login');
                 }
             });
 
@@ -869,8 +791,6 @@
                 let subtotal = 0;
                 let totalTax = 0;
                 let itemsCount = 0;
-                const customer = document.getElementById('cust-name').value.trim() || 'Walk-in Customer';
-                const address = document.getElementById('cust-address').value.trim() || 'Nepal';
 
                 invoiceItems.forEach(item => {
                     let base = (item.price * item.qty) - item.disc;
@@ -882,48 +802,53 @@
 
                 let grandTotal = subtotal + totalTax;
                 let invNo = '00' + Math.floor(100 + Math.random() * 900) + '/2082-83';
+                let customerName = document.getElementById('cust-name').value.trim() || 'Cash / Walk-in Customer';
 
-                salesSubsidiary.unshift({
+                salesInvoices.unshift({
                     invNo,
-                    customer,
-                    address,
+                    customer: customerName,
                     itemsCount,
                     subtotal,
                     tax: totalTax,
                     total: grandTotal,
-                    date: new Date().toLocaleDateString()
+                    date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' + new Date().toLocaleDateString()
                 });
 
                 invoiceItems = [];
+                document.getElementById('cust-name').value = '';
+                document.getElementById('cust-address').value = '';
+                updateCustomerUI();
                 updateInvoiceUI();
                 updateAccountingAndBooks();
-                alert("Sales Invoice successfully posted to Sales Subsidiary Book & Accounts!");
-                switchTab('sales');
+                alert("Tax Invoice successfully completed and posted to Sales Invoices Book & Ledger!");
+                switchTab('sales-book');
             });
 
             document.getElementById('btn-add-purchase').addEventListener('click', () => {
                 const supplier = document.getElementById('purch-supplier').value.trim();
-                const invNo = document.getElementById('purch-inv').value.trim();
-                const amount = parseFloat(document.getElementById('purch-amount').value);
+                const item = document.getElementById('purch-item').value.trim();
+                const amount = parseFloat(document.getElementById('purch-amount').value) || 0;
 
-                if (!supplier || !invNo || isNaN(amount) || amount <= 0) {
-                    return alert("Please enter valid supplier name, bill number, and amount.");
+                if (!supplier || !item || amount <= 0) {
+                    return alert("Please enter valid supplier name, item description, and amount.");
                 }
 
-                purchaseSubsidiary.unshift({
-                    invNo,
+                let refNo = 'PUR-' + Math.floor(1000 + Math.random() * 9000);
+
+                purchaseInvoices.unshift({
+                    refNo,
                     supplier,
+                    item,
                     amount,
                     date: new Date().toLocaleDateString()
                 });
 
                 document.getElementById('purch-supplier').value = '';
-                document.getElementById('purch-inv').value = '';
+                document.getElementById('purch-item').value = '';
                 document.getElementById('purch-amount').value = '';
 
                 updateAccountingAndBooks();
-                alert("Purchase Invoice recorded to Purchase Subsidiary Book & Accounts!");
-                switchTab('purchase');
+                alert("Purchase invoice successfully recorded and posted to Purchase Book & Ledger!");
             });
         });
     </script>
